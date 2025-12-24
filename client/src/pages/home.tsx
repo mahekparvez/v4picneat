@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import Layout from "@/components/layout";
-import astronautRocket from "@assets/generated_images/cartoon_astronaut_riding_a_rocket.png";
+import astronautRocket from "@assets/a77ee6871c13c92f3bc98c0985a53a59_1766601554855.jpg";
 
 export default function Home() {
   return (
@@ -25,9 +25,9 @@ export default function Home() {
             <h1 className="text-2xl font-bold font-display uppercase leading-tight mb-2">
               Make Neil<br />Space Ready
             </h1>
-            <p className="text-sm font-medium text-gray-600">DAY 1 / 14</p>
+            <p className="text-sm font-medium text-gray-600">DAY 1 / 7</p>
           </div>
-          <div className="absolute right-[-20px] bottom-[-20px] w-48 h-48 z-0">
+          <div className="absolute right-[-40px] bottom-[-40px] w-56 h-56 z-0">
              <img src={astronautRocket} alt="Astronaut" className="w-full h-full object-contain" />
           </div>
         </motion.div>
