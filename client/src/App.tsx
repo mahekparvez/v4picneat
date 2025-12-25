@@ -5,14 +5,16 @@ import { Toaster } from "@/components/ui/toaster";
 import NotFound from "@/pages/not-found";
 import Home from "@/pages/home";
 import Leaderboard from "@/pages/leaderboard";
+import SearchPage from "@/pages/search";
+import CameraPage from "@/pages/camera";
 
 function Router() {
   return (
     <Switch>
       <Route path="/" component={Home} />
       <Route path="/lead" component={Leaderboard} />
-      <Route path="/pic" component={Home} /> {/* Placeholder for Pic tab */}
-      <Route path="/search" component={Home} /> {/* Placeholder for Search */}
+      <Route path="/pic" component={CameraPage} />
+      <Route path="/search" component={SearchPage} />
       <Route component={NotFound} />
     </Switch>
   );

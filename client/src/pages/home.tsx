@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import Layout from "@/components/layout";
-import astronautRocket from "@assets/a77ee6871c13c92f3bc98c0985a53a59_1766601554855.jpg";
+import astronautRocket from "@assets/Adobe_Express_-_file_1766602010364.png";
 
 export default function Home() {
   return (
@@ -27,7 +27,7 @@ export default function Home() {
             </h1>
             <p className="text-sm font-medium text-gray-600">DAY 1 / 7</p>
           </div>
-          <div className="absolute right-[-40px] bottom-[-40px] w-56 h-56 z-0">
+          <div className="absolute right-[-10px] bottom-[-20px] w-44 h-44 z-0">
              <img src={astronautRocket} alt="Astronaut" className="w-full h-full object-contain" />
           </div>
         </motion.div>
@@ -41,7 +41,6 @@ export default function Home() {
             transition={{ delay: 0.1 }}
             className="aspect-square relative flex items-center justify-center"
           >
-             {/* Gradient Ring Implementation */}
              <div className="absolute inset-0 rounded-full border-[12px] border-gray-100" />
              <svg className="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 100 100">
                <circle
@@ -52,7 +51,7 @@ export default function Home() {
                  stroke="url(#gradient)"
                  strokeWidth="12"
                  strokeDasharray="276"
-                 strokeDashoffset="10" // (1800/1980 roughly)
+                 strokeDashoffset="10"
                  strokeLinecap="round"
                />
                <defs>
@@ -77,15 +76,15 @@ export default function Home() {
           >
             <div className="flex justify-between items-center">
               <span className="font-bold text-sm">PROTEIN</span>
-              <span className="text-gray-600 text-sm">Xg</span>
+              <span className="text-gray-600 text-sm font-mono tracking-tighter">Xg</span>
             </div>
              <div className="flex justify-between items-center">
               <span className="font-bold text-sm">CARBS</span>
-              <span className="text-gray-600 text-sm">Yg</span>
+              <span className="text-gray-600 text-sm font-mono tracking-tighter">Yg</span>
             </div>
              <div className="flex justify-between items-center">
               <span className="font-bold text-sm">FATS</span>
-              <span className="text-gray-600 text-sm">Zg</span>
+              <span className="text-gray-600 text-sm font-mono tracking-tighter">Zg</span>
             </div>
           </motion.div>
         </div>
@@ -107,10 +106,12 @@ export default function Home() {
                   className="w-full h-full object-cover"
                 />
               </div>
-              <div>
-                <h3 className="font-medium text-gray-900">food name</h3>
-                <p className="text-sm text-gray-500 mb-1">N Cals</p>
-                <div className="flex gap-3 text-xs text-gray-400 font-mono">
+              <div className="flex-1">
+                <div className="flex justify-between items-start">
+                  <h3 className="font-bold text-gray-900 uppercase text-sm tracking-tight">food name</h3>
+                </div>
+                <p className="text-xs font-bold text-gray-500 mb-1 uppercase tracking-tight">N Cals</p>
+                <div className="flex gap-4 text-xs text-gray-400 font-mono">
                   <span>Xg</span>
                   <span>Yg</span>
                   <span>Zg</span>

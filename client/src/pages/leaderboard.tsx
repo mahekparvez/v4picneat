@@ -1,8 +1,8 @@
 import { motion } from "framer-motion";
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import Layout from "@/components/layout";
-import astronautCape from "@assets/Astronaut-cartoon-illustration-vector_1766601525774.jpg";
-import planets from "@assets/Planets_1766601562881.avif";
+import astronautCape from "@assets/Astronaut-cartoon-illustration-vector_1766637602817.png";
+import planetsSheet from "@assets/Planets_1766637592592.png";
 
 const data = [
   { name: '5', miles: 2000 },
@@ -11,14 +11,6 @@ const data = [
   { name: '20', miles: 2400 },
   { name: '25', miles: 1900 },
   { name: '30', miles: 2600 },
-];
-
-const planetData = [
-  { name: 'Moon', miles: '100 mi', bg: 'from-blue-200 to-blue-400' },
-  { name: 'Mercury', miles: '200 mi', bg: 'from-red-300 to-red-500' },
-  { name: 'Venus', miles: '300 mi', bg: 'from-pink-300 to-purple-500' },
-  { name: 'Jupiter', miles: '400 mi', bg: 'from-orange-300 to-orange-500' },
-  { name: 'Uranus', miles: '500 mi', bg: 'from-cyan-300 to-purple-500' },
 ];
 
 export default function Leaderboard() {
@@ -35,10 +27,10 @@ export default function Leaderboard() {
 
         {/* Mission & Chart Section */}
         <div className="mb-8 relative">
-           <h1 className="text-2xl font-bold font-display uppercase mb-1">Mission Number: 1</h1>
-           <p className="text-base font-bold mb-4">Miles: 60</p>
+           <h1 className="text-2xl font-bold font-display uppercase mb-1 tracking-tighter">Mission Number: 1</h1>
+           <p className="text-base font-bold mb-4 uppercase tracking-tight">Miles: 60</p>
            
-           <div className="h-48 w-full bg-orange-50 rounded-2xl mb-4 relative overflow-hidden border border-orange-100">
+           <div className="h-48 w-full bg-orange-50/50 rounded-2xl mb-4 relative overflow-hidden border border-orange-100">
              <ResponsiveContainer width="100%" height="100%">
                <AreaChart data={data} margin={{ top: 10, right: 10, left: -30, bottom: 0 }}>
                  <defs>
@@ -47,28 +39,29 @@ export default function Leaderboard() {
                      <stop offset="95%" stopColor="#e67e22" stopOpacity={0}/>
                    </linearGradient>
                  </defs>
-                 <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fontSize: 11, fill: '#9ca3af'}} />
+                 <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fontSize: 11, fill: '#9ca3af', fontWeight: 'bold'}} />
                  <YAxis hide domain={['dataMin - 500', 'dataMax + 500']} />
-                 <Tooltip contentStyle={{ backgroundColor: 'white', border: 'none', borderRadius: '8px' }} />
-                 <Area type="monotone" dataKey="miles" stroke="#e67e22" strokeWidth={2} fillOpacity={1} fill="url(#colorMiles)" />
+                 <Tooltip />
+                 <Area type="monotone" dataKey="miles" stroke="#e67e22" strokeWidth={3} fillOpacity={1} fill="url(#colorMiles)" />
                </AreaChart>
              </ResponsiveContainer>
              
              {/* Floating Astronaut */}
-             <div className="absolute -right-6 top-2 w-32 h-32">
-                <img src={astronautCape} alt="Astronaut" className="w-full h-full object-contain drop-shadow-lg" />
+             <div className="absolute -right-4 top-2 w-32 h-32">
+                <img src={astronautCape} alt="Astronaut" className="w-full h-full object-contain drop-shadow-xl" />
              </div>
            </div>
         </div>
 
         {/* Mission Stats */}
         <div className="mb-8">
-          <h3 className="font-display font-bold text-lg mb-3 uppercase">Mission</h3>
-          <div className="bg-lime-100 rounded-2xl p-4 flex items-center gap-4 border-2 border-lime-300 shadow-sm">
-             <div className="w-12 h-12 text-2xl flex items-center justify-center">
-               🪐
+          <h3 className="font-display font-bold text-lg mb-3 uppercase tracking-tighter">Mission</h3>
+          <div className="bg-lime-100/80 rounded-2xl p-4 flex items-center gap-4 border-2 border-lime-300/50 shadow-sm">
+             <div className="w-12 h-12 flex items-center justify-center overflow-hidden">
+               {/* Slicing Saturn-like planet from the sheet */}
+               <div className="w-16 h-16 shrink-0" style={{ backgroundImage: `url(${planetsSheet})`, backgroundSize: '400% 200%', backgroundPosition: '66% 100%' }} />
              </div>
-             <div className="font-medium text-sm text-gray-900">
+             <div className="font-bold text-sm text-gray-900 uppercase tracking-tight">
                1 Mission | 100mi | 7 Days Streak
              </div>
           </div>
@@ -76,15 +69,21 @@ export default function Leaderboard() {
 
         {/* Badges */}
         <div className="mb-8">
-          <h3 className="font-display font-bold text-lg mb-4 uppercase">Badges</h3>
-          <div className="flex justify-between items-center">
-            {planetData.map((planet) => (
-              <div key={planet.name} className="flex flex-col items-center gap-2">
-                 <div className="text-[10px] font-bold text-gray-700 uppercase">{planet.name}</div>
-                 <div className={`w-14 h-14 rounded-full shadow-md border-2 border-white overflow-hidden bg-gradient-to-br ${planet.bg} flex items-center justify-center`}>
-                   <span className="text-lg">•</span>
+          <h3 className="font-display font-bold text-lg mb-4 uppercase tracking-tighter">Badges</h3>
+          <div className="flex justify-between items-center gap-2 no-scrollbar">
+            {[
+              { name: 'Moon', miles: '100 mi', pos: '66% 0%' },
+              { name: 'Mercury', miles: '200 mi', pos: '33% 100%' },
+              { name: 'Venus', miles: '300 mi', pos: '0% 0%' },
+              { name: 'Jupiter', miles: '400 mi', pos: '100% 0%' },
+              { name: 'Uranus', miles: '500 mi', pos: '100% 100%' }
+            ].map((planet) => (
+              <div key={planet.name} className="flex flex-col items-center gap-1 shrink-0">
+                 <div className="text-[10px] font-bold text-gray-400 uppercase tracking-tighter">{planet.name}</div>
+                 <div className="w-14 h-14 rounded-full shadow-lg border-2 border-white bg-white flex items-center justify-center overflow-hidden">
+                    <div className="w-20 h-20 shrink-0" style={{ backgroundImage: `url(${planetsSheet})`, backgroundSize: '400% 200%', backgroundPosition: planet.pos }} />
                  </div>
-                 <div className="text-[10px] font-bold text-gray-900 text-center leading-tight">{planet.miles}</div>
+                 <div className="text-[10px] font-black text-gray-900 mt-1 uppercase tracking-tighter text-center">{planet.miles}</div>
               </div>
             ))}
           </div>
@@ -92,19 +91,21 @@ export default function Leaderboard() {
 
         {/* Leaderboard */}
         <div>
-           <h3 className="font-display font-bold text-lg mb-4 uppercase">Leaderboard</h3>
+           <h3 className="font-display font-bold text-lg mb-4 uppercase tracking-tighter">Leaderboard</h3>
            <div className="space-y-3">
              {[
-               { name: "NAME", days: 16, color: "bg-red-700" },
-               { name: "NAME", days: 6, color: "bg-blue-300" },
-               { name: "NAME", days: 3, color: "bg-blue-200" }
+               { name: "NAME", days: 16, pos: '33% 100%' },
+               { name: "NAME", days: 6, pos: '66% 0%' },
+               { name: "NAME", days: 3, pos: '66% 0%' }
              ].map((user, i) => (
-               <div key={i} className="flex items-center justify-between bg-gray-200 p-4 rounded-xl">
+               <div key={i} className="flex items-center justify-between bg-gray-200/60 p-4 rounded-xl">
                  <div className="flex items-center gap-4">
-                   <div className={`w-12 h-12 rounded-full ${user.color} shadow-sm border-2 border-white`} />
-                   <span className="font-bold font-display text-gray-900 uppercase tracking-wide">{user.name}</span>
+                   <div className="w-12 h-12 rounded-full border-2 border-white shadow-md bg-white flex items-center justify-center overflow-hidden">
+                      <div className="w-16 h-16 shrink-0" style={{ backgroundImage: `url(${planetsSheet})`, backgroundSize: '400% 200%', backgroundPosition: user.pos }} />
+                   </div>
+                   <span className="font-black font-display uppercase tracking-widest text-gray-900">{user.name}</span>
                  </div>
-                 <span className="font-bold text-sm text-gray-900">{user.days} Days</span>
+                 <span className="font-black text-sm text-gray-900 uppercase tracking-tight">{user.days} Days</span>
                </div>
              ))}
            </div>
