@@ -38,7 +38,7 @@ export default function SearchPage() {
         </div>
 
         {/* Dining Court List */}
-        <div className="space-y-[2px] flex-1 overflow-y-auto no-scrollbar pb-24">
+        <div className="space-y-[1px] flex-1 overflow-y-auto no-scrollbar pb-24">
           {DINING_COURTS.map((court, i) => (
             <motion.div 
               key={court.name}
