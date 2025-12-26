@@ -6,15 +6,6 @@ export default function Home() {
   return (
     <Layout>
       <div className="px-6 pt-12 pb-6">
-        {/* Header Section */}
-        <div className="flex justify-between items-start mb-6">
-          <div className="text-[17px] font-medium text-gray-500">9:41</div>
-          <div className="flex gap-1">
-            <div className="w-5 h-5 bg-gray-900 rounded-sm" />
-            <div className="w-5 h-5 bg-gray-900 rounded-sm" />
-          </div>
-        </div>
-
         {/* Hero Card */}
         <motion.div 
           initial={{ opacity: 0, y: 20 }}

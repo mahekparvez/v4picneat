@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import Layout from "@/components/layout";
-import { Camera as CameraIcon, X, Zap } from "lucide-react";
+import { X, Zap } from "lucide-react";
 
 export default function CameraPage() {
   const [hasPhoto, setHasPhoto] = useState(false);
@@ -50,13 +50,6 @@ export default function CameraPage() {
   return (
     <Layout>
       <div className="min-h-screen bg-black relative overflow-hidden">
-        {/* Status Bar Mock */}
-        <div className="absolute top-12 left-6 text-sm font-medium text-white z-20">9:41</div>
-        <div className="absolute top-12 right-6 flex gap-1 z-20">
-          <div className="w-4 h-4 bg-white/20 rounded-sm" />
-          <div className="w-4 h-4 bg-white/20 rounded-sm" />
-        </div>
-
         {/* Camera Feed / Photo Preview */}
         <div className="absolute inset-0 flex items-center justify-center">
           {hasPhoto ? (
@@ -70,19 +63,21 @@ export default function CameraPage() {
             />
           )}
           
-          {/* Viewfinder Corners (Visible only when no photo) */}
+          {/* Viewfinder Corners (Starts on the line horizontally above the top of the circle) */}
           {!hasPhoto && (
-            <div className="absolute w-4/5 aspect-[3/4] pointer-events-none">
-              <div className="absolute top-0 left-0 w-12 h-12 border-t-4 border-l-4 border-white/60 rounded-tl-xl" />
-              <div className="absolute top-0 right-0 w-12 h-12 border-t-4 border-r-4 border-white/60 rounded-tr-xl" />
-              <div className="absolute bottom-0 left-0 w-12 h-12 border-b-4 border-l-4 border-white/60 rounded-bl-xl" />
-              <div className="absolute bottom-0 right-0 w-12 h-12 border-b-4 border-r-4 border-white/60 rounded-br-xl" />
+            <div className="absolute w-full px-4 bottom-[calc(8rem+80px+20px)] pointer-events-none">
+              <div className="w-full aspect-[4/3] relative">
+                <div className="absolute top-0 left-0 w-12 h-12 border-t-4 border-l-4 border-white/60 rounded-tl-xl" />
+                <div className="absolute top-0 right-0 w-12 h-12 border-t-4 border-r-4 border-white/60 rounded-tr-xl" />
+                <div className="absolute bottom-0 left-0 w-12 h-12 border-b-4 border-l-4 border-white/60 rounded-bl-xl" />
+                <div className="absolute bottom-0 right-0 w-12 h-12 border-b-4 border-r-4 border-white/60 rounded-br-xl" />
+              </div>
             </div>
           )}
         </div>
 
         {/* Top Controls */}
-        <div className="absolute top-24 left-0 right-0 flex justify-between px-8 z-20">
+        <div className="absolute top-12 left-0 right-0 flex justify-between px-8 z-20">
           <button className="p-2 bg-black/40 backdrop-blur rounded-full text-white">
             <Zap size={20} />
           </button>
@@ -96,7 +91,7 @@ export default function CameraPage() {
           )}
         </div>
 
-        {/* Capture Button */}
+        {/* Capture Button Container */}
         <div className="absolute bottom-32 left-0 right-0 flex justify-center z-20">
           {!hasPhoto ? (
             <button 
