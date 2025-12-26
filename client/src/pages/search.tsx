@@ -33,12 +33,12 @@ export default function SearchPage() {
         </div>
 
         {/* Hero Image at the top */}
-        <div className="w-full rounded-2xl overflow-hidden mb-6 shrink-0 shadow-lg border-2 border-white">
+        <div className="w-full rounded-2xl overflow-hidden mb-0.5 shrink-0 shadow-lg border-2 border-white">
           <img src={foodHero} alt="Food Hero" className="w-full h-auto object-cover" />
         </div>
 
         {/* Dining Court List */}
-        <div className="space-y-[3px] flex-1 overflow-y-auto no-scrollbar pb-24">
+        <div className="space-y-[2px] flex-1 overflow-y-auto no-scrollbar pb-24">
           {DINING_COURTS.map((court, i) => (
             <motion.div 
               key={court.name}
