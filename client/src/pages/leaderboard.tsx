@@ -3,6 +3,7 @@ import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis, ReferenceL
 import Layout from "@/components/layout";
 import astronautCape from "@assets/Astronaut-cartoon-illustration-vector_1766637602817.png";
 import planetsRow from "@assets/image_1766761255761.png";
+import superAstronaut from "@assets/image_1766761677744.png";
 
 const data = [
   { name: '0', calories: 1500 },
@@ -34,17 +35,22 @@ const CustomCursor = (props: any) => {
 export default function Leaderboard() {
   return (
     <Layout>
-      <div className="px-6 pt-12 pb-6">
+      <div className="px-6 pt-12 pb-6 relative overflow-hidden">
+        {/* Hero Illustration Background */}
+        <div className="absolute -right-16 top-0 w-64 h-64 pointer-events-none opacity-40 blur-[1px] -z-10">
+          <img src={superAstronaut} alt="Hero Astronaut" className="w-full h-full object-contain mix-blend-multiply" />
+        </div>
+
         {/* Mission & Chart Section */}
         <div className="mb-4 relative">
           <div className="flex items-center justify-between">
             <h1 className="text-[31px] font-bold font-display uppercase mb-1 tracking-tighter">Mission Number: 1</h1>
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-1 relative -top-[1px]">
               <span className="text-[31px] font-bold font-display uppercase leading-none">2</span>
               <span className="text-2xl leading-none">⭐</span>
             </div>
           </div>
-           <p className="text-base font-bold mb-4 uppercase tracking-tight">Miles: 60</p>
+           <p className="text-[18px] font-bold mb-4 uppercase tracking-tight">Miles: 60</p>
            
            <div className="h-64 w-full bg-orange-50/50 rounded-2xl mb-4 relative overflow-hidden border border-orange-100">
              <ResponsiveContainer width="100%" height="100%">
@@ -126,7 +132,7 @@ export default function Leaderboard() {
         </div>
 
         {/* Leaderboard */}
-        <div>
+        <div className="pb-24">
            <h3 className="font-display font-bold text-lg mb-4 uppercase tracking-tighter">Leaderboard</h3>
            <div className="space-y-1">
              {[

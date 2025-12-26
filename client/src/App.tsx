@@ -12,8 +12,8 @@ function Router() {
   return (
     <Switch>
       <Route path="/" component={Home} />
-      <Route path="/lead" component={Leaderboard} />
-      <Route path="/pic" component={CameraPage} />
+      <Route path="/leaderboard" component={Leaderboard} />
+      <Route path="/camera" component={CameraPage} />
       <Route path="/search" component={SearchPage} />
       <Route component={NotFound} />
     </Switch>
