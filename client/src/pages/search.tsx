@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import Layout from "@/components/layout";
 import { Search, Menu } from "lucide-react";
-import searchingAstronaut from "@assets/cute-astronaut-searching-location-moon-cartoon-vector-icon-ill_1766638033225.png";
+import foodHero from "@assets/Gemini_Generated_Image_pd099ypd099ypd09_1766760815827.png";
 
 const CATEGORIES = [
   { name: "Protein", color: "bg-blue-100 text-blue-700 border-blue-200" },
@@ -32,19 +32,19 @@ export default function SearchPage() {
           </div>
         </div>
 
-        {/* Mascot replaces the old one position */}
-        <div className="w-full flex justify-center mb-6 shrink-0">
-          <img src={searchingAstronaut} alt="Searching" className="w-48 h-48 object-contain" />
+        {/* Hero Image at the top */}
+        <div className="w-full rounded-2xl overflow-hidden mb-6 shrink-0 shadow-lg border-2 border-white">
+          <img src={foodHero} alt="Food Hero" className="w-full h-auto object-cover" />
         </div>
 
         {/* Dining Court List */}
-        <div className="space-y-4 flex-1 overflow-y-auto no-scrollbar pb-24">
+        <div className="space-y-[3px] flex-1 overflow-y-auto no-scrollbar pb-24">
           {DINING_COURTS.map((court, i) => (
             <motion.div 
               key={court.name}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.1 }}
+              transition={{ delay: i * 0.05 }}
               className="bg-gray-200/50 rounded-xl p-5"
             >
               <h3 className="font-bold font-display uppercase text-lg mb-1 tracking-tighter">{court.name}</h3>
