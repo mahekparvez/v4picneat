@@ -36,16 +36,19 @@ export default function Leaderboard() {
     <Layout>
       <div className="px-6 pt-12 pb-6">
         {/* Mission & Chart Section */}
-        <div className="mb-8 relative">
+        <div className="mb-4 relative">
           <div className="flex items-center justify-between">
             <h1 className="text-[31px] font-bold font-display uppercase mb-1 tracking-tighter">Mission Number: 1</h1>
-            <div className="text-3xl flex items-center gap-1">2 <span className="text-2xl">⭐</span></div>
+            <div className="flex items-center gap-1">
+              <span className="text-[31px] font-bold font-display uppercase leading-none">2</span>
+              <span className="text-2xl leading-none">⭐</span>
+            </div>
           </div>
            <p className="text-base font-bold mb-4 uppercase tracking-tight">Miles: 60</p>
            
-           <div className="h-56 w-full bg-orange-50/50 rounded-2xl mb-4 relative overflow-hidden border border-orange-100">
+           <div className="h-64 w-full bg-orange-50/50 rounded-2xl mb-4 relative overflow-hidden border border-orange-100">
              <ResponsiveContainer width="100%" height="100%">
-               <AreaChart data={data} margin={{ top: 60, right: 10, left: 0, bottom: 20 }}>
+               <AreaChart data={data} margin={{ top: 60, right: 15, left: 15, bottom: 25 }}>
                  <defs>
                    <linearGradient id="colorCals" x1="0" y1="0" x2="0" y2="1">
                      <stop offset="5%" stopColor="#e67e22" stopOpacity={0.15}/>
@@ -56,7 +59,7 @@ export default function Leaderboard() {
                    dataKey="name" 
                    axisLine={false} 
                    tickLine={false} 
-                   label={{ value: 'Days', position: 'insideBottom', offset: -10, fontSize: 14, fontWeight: '900' }}
+                   label={{ value: 'Days', position: 'insideBottom', offset: -15, fontSize: 14, fontWeight: '900' }}
                    tick={{fontSize: 11, fill: '#9ca3af', fontWeight: '900'}} 
                  />
                  <YAxis 
@@ -64,7 +67,7 @@ export default function Leaderboard() {
                    tickLine={false} 
                    tick={(props) => {
                      const { x, y, payload } = props;
-                     if (payload.value === 0) return null; // Only one 0 handled by XAxis
+                     if (payload.value === 0) return null;
                      return (
                        <text x={x} y={y} dy={4} textAnchor="end" fontSize={11} fill="#9ca3af" fontWeight="900">
                          {payload.value}
@@ -73,7 +76,7 @@ export default function Leaderboard() {
                    }}
                    domain={[0, 3000]} 
                    ticks={[0, 1000, 2000, 3000]}
-                   label={{ value: 'Calories', angle: -90, position: 'insideLeft', fontSize: 14, fontWeight: '900' }}
+                   label={{ value: 'Calories', angle: -90, position: 'insideLeft', fontSize: 14, fontWeight: '900', offset: 0 }}
                  />
                  <Tooltip 
                    cursor={<CustomCursor />} 
