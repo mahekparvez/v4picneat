@@ -108,13 +108,13 @@ export default function Leaderboard() {
               { name: 'Moon', miles: '100 mi', pos: '66% 0%' },
               { name: 'Mercury', miles: '200 mi', pos: '33% 100%' },
               { name: 'Venus', miles: '300 mi', pos: '0% 0%' },
-              { name: 'Jupiter', miles: '400 mi', pos: '100% 0%' },
-              { name: 'Uranus', miles: '500 mi', pos: '100% 100%' }
+              { name: 'Jupiter', miles: '100% 0%' },
+              { name: 'Uranus', miles: '100% 100%' }
             ].map((planet) => (
               <div key={planet.name} className="flex flex-col items-center gap-1 shrink-0 flex-1">
                  <div className="text-sm font-black text-gray-400 uppercase tracking-tighter text-center">{planet.name}</div>
                  <div className="w-16 h-16 rounded-full shadow-lg border-2 border-white bg-white flex items-center justify-center overflow-hidden">
-                    <div className="w-16 h-16 shrink-0 rounded-full scale-110" style={{ backgroundImage: `url(${planetsSheet})`, backgroundSize: '400% 200%', backgroundPosition: planet.pos }} />
+                    <div className="w-16 h-16 shrink-0 rounded-full scale-[1.5]" style={{ backgroundImage: `url(${planetsSheet})`, backgroundSize: '400% 200%', backgroundPosition: planet.pos }} />
                  </div>
                  <div className="text-sm font-black text-gray-900 mt-1 uppercase tracking-tighter text-center">{planet.miles}</div>
               </div>
@@ -136,7 +136,7 @@ export default function Leaderboard() {
                <div key={i} className="flex items-center justify-between bg-gray-200/60 p-3 rounded-xl">
                  <div className="flex items-center gap-4">
                    <div className="w-12 h-12 rounded-full border-2 border-white shadow-md bg-white flex items-center justify-center overflow-hidden">
-                      <div className="w-12 h-12 shrink-0 rounded-full scale-110" style={{ backgroundImage: `url(${planetsSheet})`, backgroundSize: '400% 200%', backgroundPosition: user.pos }} />
+                      <div className="w-12 h-12 shrink-0 rounded-full scale-[1.5]" style={{ backgroundImage: `url(${planetsSheet})`, backgroundSize: '400% 200%', backgroundPosition: user.pos }} />
                    </div>
                    <span className="font-black font-display uppercase tracking-widest text-gray-900 text-sm">{user.name}</span>
                  </div>
