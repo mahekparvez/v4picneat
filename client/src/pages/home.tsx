@@ -22,12 +22,12 @@ export default function Home() {
           className="bg-gray-100 rounded-3xl p-6 relative overflow-hidden mb-8 h-48"
         >
           <div className="relative z-10 w-2/3">
-            <h1 className="text-[27px] font-bold font-display uppercase leading-tight mb-2">
+            <h1 className="text-[35px] font-bold font-display uppercase leading-tight mb-2">
               Make Neil<br />Space Ready
             </h1>
-            <p className="text-[17px] font-medium text-gray-600">DAY 1 / 7</p>
+            <p className="text-[25px] font-medium text-gray-600">DAY 1 / 7</p>
           </div>
-          <div className="absolute right-[-15px] bottom-[-25px] w-48 h-48 z-0">
+          <div className="absolute right-[-15px] bottom-[-25px] w-56 h-56 z-0">
              <img src={astronautRocket} alt="Astronaut" className="w-full h-full object-contain" />
           </div>
         </motion.div>
@@ -62,8 +62,8 @@ export default function Home() {
                </defs>
              </svg>
              <div className="text-center z-10">
-               <div className="text-[43px] font-bold font-display tracking-tighter">1980</div>
-               <div className="text-[15px] text-gray-500 font-medium">/1800</div>
+               <div className="text-[45px] font-bold font-display tracking-tighter">1980</div>
+               <div className="text-[17px] text-gray-500 font-medium">/1800</div>
              </div>
           </motion.div>
 
@@ -75,16 +75,16 @@ export default function Home() {
              className="bg-gray-200/50 rounded-2xl p-5 flex flex-col justify-center space-y-3"
           >
             <div className="flex justify-between items-center">
-              <span className="font-bold text-[17px]">PROTEIN</span>
-              <span className="text-gray-600 text-[17px] font-mono tracking-tighter">Xg</span>
+              <span className="font-bold text-[21px]">PROTEIN</span>
+              <span className="text-gray-600 text-[21px] font-mono tracking-tighter">Xg</span>
             </div>
              <div className="flex justify-between items-center">
-              <span className="font-bold text-[17px]">CARBS</span>
-              <span className="text-gray-600 text-[17px] font-mono tracking-tighter">Yg</span>
+              <span className="font-bold text-[21px]">CARBS</span>
+              <span className="text-gray-600 text-[21px] font-mono tracking-tighter">Yg</span>
             </div>
              <div className="flex justify-between items-center">
-              <span className="font-bold text-[17px]">FATS</span>
-              <span className="text-gray-600 text-[17px] font-mono tracking-tighter">Zg</span>
+              <span className="font-bold text-[21px]">FATS</span>
+              <span className="text-gray-600 text-[21px] font-mono tracking-tighter">Zg</span>
             </div>
           </motion.div>
         </div>
