@@ -75,9 +75,9 @@ export default function CameraPage() {
             />
           )}
           
-          {/* Viewfinder Corners (Starts on the line horizontally above the top of the circle) */}
+          {/* Viewfinder Corners (Upper parts right below thunder, bottom parts right above circle) */}
           {!hasPhoto && (
-            <div className="absolute w-full px-4 top-[100px] pointer-events-none z-20">
+            <div className="absolute inset-0 flex flex-col items-center justify-between py-32 px-4 pointer-events-none z-20">
               <div className="w-full aspect-[4/3] relative">
                 <div className="absolute top-0 left-0 w-12 h-12 border-t-4 border-l-4 border-white/60 rounded-tl-xl" />
                 <div className="absolute top-0 right-0 w-12 h-12 border-t-4 border-r-4 border-white/60 rounded-tr-xl" />
