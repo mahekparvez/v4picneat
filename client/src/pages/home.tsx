@@ -27,7 +27,7 @@ export default function Home() {
             </h1>
             <p className="text-[25px] font-medium text-gray-600">DAY 1 / 7</p>
           </div>
-          <div className="absolute right-[-15px] bottom-[-25px] w-56 h-56 z-0">
+          <div className="absolute right-[-20px] bottom-[-35px] w-[229px] h-[229px] z-0">
              <img src={astronautRocket} alt="Astronaut" className="w-full h-full object-contain" />
           </div>
         </motion.div>
