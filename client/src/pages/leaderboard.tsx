@@ -39,7 +39,7 @@ export default function Leaderboard() {
         <div className="mb-8 relative">
           <div className="flex items-center justify-between">
             <h1 className="text-[31px] font-bold font-display uppercase mb-1 tracking-tighter">Mission Number: 1</h1>
-            <div className="text-3xl">⭐⭐</div>
+            <div className="text-3xl flex items-center gap-1">2 <span className="text-2xl">⭐</span></div>
           </div>
            <p className="text-base font-bold mb-4 uppercase tracking-tight">Miles: 60</p>
            
@@ -56,16 +56,24 @@ export default function Leaderboard() {
                    dataKey="name" 
                    axisLine={false} 
                    tickLine={false} 
-                   label={{ value: 'Days', position: 'insideBottom', offset: -10, fontSize: 14, fontWeight: 'bold' }}
-                   tick={{fontSize: 11, fill: '#9ca3af', fontWeight: 'bold'}} 
+                   label={{ value: 'Days', position: 'insideBottom', offset: -10, fontSize: 14, fontWeight: '900' }}
+                   tick={{fontSize: 11, fill: '#9ca3af', fontWeight: '900'}} 
                  />
                  <YAxis 
                    axisLine={false} 
                    tickLine={false} 
-                   tick={{fontSize: 10, fill: '#9ca3af'}} 
+                   tick={(props) => {
+                     const { x, y, payload } = props;
+                     if (payload.value === 0) return null; // Only one 0 handled by XAxis
+                     return (
+                       <text x={x} y={y} dy={4} textAnchor="end" fontSize={11} fill="#9ca3af" fontWeight="900">
+                         {payload.value}
+                       </text>
+                     );
+                   }}
                    domain={[0, 3000]} 
                    ticks={[0, 1000, 2000, 3000]}
-                   label={{ value: 'Calories', angle: -90, position: 'insideLeft', fontSize: 14, fontWeight: 'bold' }}
+                   label={{ value: 'Calories', angle: -90, position: 'insideLeft', fontSize: 14, fontWeight: '900' }}
                  />
                  <Tooltip 
                    cursor={<CustomCursor />} 
@@ -83,8 +91,8 @@ export default function Leaderboard() {
         <div className="mb-8">
           <h3 className="font-display font-bold text-lg mb-3 uppercase tracking-tighter">Mission</h3>
           <div className="bg-lime-100/80 rounded-2xl p-4 flex items-center gap-4 border-2 border-lime-300/50 shadow-sm">
-             <div className="w-16 h-16 flex items-center justify-center overflow-hidden shrink-0">
-               <div className="w-full h-full" style={{ backgroundImage: `url(${planetsSheet})`, backgroundSize: '100% 100%', backgroundPosition: 'center' }} />
+             <div className="w-16 h-16 flex items-center justify-center shrink-0">
+               <span className="text-4xl">⭐</span>
              </div>
              <div className="font-bold text-sm text-gray-900 uppercase tracking-tight">
                1 Mission | 100mi | 7 Days Streak
@@ -105,8 +113,8 @@ export default function Leaderboard() {
             ].map((planet) => (
               <div key={planet.name} className="flex flex-col items-center gap-1 shrink-0 flex-1">
                  <div className="text-sm font-black text-gray-400 uppercase tracking-tighter text-center">{planet.name}</div>
-                 <div className="w-14 h-14 rounded-full shadow-lg border-2 border-white bg-white flex items-center justify-center overflow-hidden">
-                    <div className="w-12 h-12 shrink-0 rounded-full" style={{ backgroundImage: `url(${planetsSheet})`, backgroundSize: '400% 200%', backgroundPosition: planet.pos }} />
+                 <div className="w-16 h-16 rounded-full shadow-lg border-2 border-white bg-white flex items-center justify-center overflow-hidden">
+                    <div className="w-16 h-16 shrink-0 rounded-full scale-110" style={{ backgroundImage: `url(${planetsSheet})`, backgroundSize: '400% 200%', backgroundPosition: planet.pos }} />
                  </div>
                  <div className="text-sm font-black text-gray-900 mt-1 uppercase tracking-tighter text-center">{planet.miles}</div>
               </div>
@@ -127,8 +135,8 @@ export default function Leaderboard() {
              ].map((user, i) => (
                <div key={i} className="flex items-center justify-between bg-gray-200/60 p-3 rounded-xl">
                  <div className="flex items-center gap-4">
-                   <div className="w-10 h-10 rounded-full border-2 border-white shadow-md bg-white flex items-center justify-center overflow-hidden">
-                      <div className="w-10 h-10 shrink-0 rounded-full" style={{ backgroundImage: `url(${planetsSheet})`, backgroundSize: '400% 200%', backgroundPosition: user.pos }} />
+                   <div className="w-12 h-12 rounded-full border-2 border-white shadow-md bg-white flex items-center justify-center overflow-hidden">
+                      <div className="w-12 h-12 shrink-0 rounded-full scale-110" style={{ backgroundImage: `url(${planetsSheet})`, backgroundSize: '400% 200%', backgroundPosition: user.pos }} />
                    </div>
                    <span className="font-black font-display uppercase tracking-widest text-gray-900 text-sm">{user.name}</span>
                  </div>
