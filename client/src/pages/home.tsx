@@ -76,16 +76,6 @@ export default function Home() {
                  strokeLinecap="round"
                  transition={{ type: "spring", stiffness: 50, damping: 20 }}
                />
-               <motion.circle
-                 cx="50"
-                 cy="50"
-                 r="2"
-                 fill="#e67e22"
-                 className="origin-center"
-                 animate={{ rotate: progress }}
-                 transition={{ type: "spring", stiffness: 50 }}
-                 style={{ transform: 'rotate(0deg) translate(48px)' }}
-               />
              </svg>
              <div className="text-center z-10">
                <div className="text-[52px] font-bold font-display tracking-tighter leading-none">{totals.calories}</div>

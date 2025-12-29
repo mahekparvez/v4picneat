@@ -91,17 +91,6 @@ export default function CameraPage() {
           ) : (
             <video ref={videoRef} autoPlay playsInline className="w-full h-full object-cover" />
           )}
-          
-          {!hasPhoto && (
-            <div className="absolute inset-0 flex flex-col items-center justify-between py-32 px-4 pointer-events-none z-20">
-              <div className="w-full aspect-[4/3] relative">
-                <div className="absolute top-0 left-0 w-12 h-12 border-t-4 border-l-4 border-white/60 rounded-tl-xl" />
-                <div className="absolute top-0 right-0 w-12 h-12 border-t-4 border-r-4 border-white/60 rounded-tr-xl" />
-                <div className="absolute bottom-0 left-0 w-12 h-12 border-b-4 border-l-4 border-white/60 rounded-bl-xl" />
-                <div className="absolute bottom-0 right-0 w-12 h-12 border-b-4 border-r-4 border-white/60 rounded-br-xl" />
-              </div>
-            </div>
-          )}
         </div>
 
         <div className="absolute top-12 left-0 right-0 flex justify-between px-8 z-30">
@@ -117,7 +106,7 @@ export default function CameraPage() {
 
         <div className="absolute bottom-32 left-0 right-0 flex justify-center items-center gap-8 z-30">
           {!hasPhoto ? (
-            <button onClick={takePicture} className="w-20 h-20 rounded-full border-[6px] border-white flex items-center justify-center p-1 bg-white shadow-lg active:scale-95 transition-transform">
+            <button onClick={takePicture} className="w-20 h-20 rounded-full border-[6px] border-orange-400 flex items-center justify-center p-1 bg-white shadow-lg active:scale-95 transition-transform">
               <div className="w-full h-full rounded-full border-[3px] border-orange-400 bg-transparent" />
             </button>
           ) : (
