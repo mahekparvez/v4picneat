@@ -37,7 +37,7 @@ export default function SearchPage() {
           <p className="text-[18px] text-gray-500 font-medium">What are you looking for today?</p>
         </div>
 
-        <div className="flex gap-3 overflow-x-auto no-scrollbar mb-10 -mx-6 px-6">
+        <div className="flex gap-3 overflow-x-auto no-scrollbar mb-[43px] -mx-6 px-6">
           {CATEGORIES.map((cat) => (
             <button
               key={cat.name}
@@ -80,7 +80,7 @@ export default function SearchPage() {
           ) : (
             <div className="flex flex-col items-center justify-center h-full py-12">
               <Search className="w-16 h-16 text-gray-600 mb-4" />
-              <p className="text-[18px] font-bold text-gray-400 text-center px-12 opacity-40">
+              <p className="text-[18px] font-bold text-gray-600 text-center px-12">
                 Select a nutrient above to find foods
               </p>
             </div>
