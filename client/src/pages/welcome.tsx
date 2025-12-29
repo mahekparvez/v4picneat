@@ -21,7 +21,7 @@ export default function WelcomePage() {
           </div>
           
           <h1 className="text-[48px] font-black font-display uppercase leading-[0.9] mb-4 tracking-tighter text-black">
-            Pic N<br />Eat
+            Pic N Eat
           </h1>
           <p className="text-xl text-gray-500 font-bold tracking-tight px-8">
             Your AI-powered nutrition companion for Purdue dining
