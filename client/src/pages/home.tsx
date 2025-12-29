@@ -61,24 +61,26 @@ export default function Home() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-[#f0f2f5] rounded-3xl p-8 relative overflow-hidden mb-8 h-56"
+          className="bg-[#f0f2f5] rounded-3xl p-[2px] relative overflow-hidden mb-8"
         >
-          <div className="relative z-10 w-2/3">
-            <h1 className="text-[38px] font-bold font-display uppercase leading-[0.9] mb-4 tracking-tighter text-black">
-              Make Neil
-              <br />
-              Space Ready
-            </h1>
-            <p className="text-[28px] font-bold text-gray-500 uppercase tracking-tighter">
-              DAY 1 / 7
-            </p>
-          </div>
-          <div className="absolute right-[-10px] bottom-[-20px] w-[240px] h-[240px] z-0">
-            <img
-              src={astronautRocket}
-              alt="Astronaut"
-              className="w-full h-full object-contain"
-            />
+          <div className="bg-[#f0f2f5] rounded-[calc(1.5rem-2px)] p-6 h-56 relative">
+            <div className="relative z-10 w-2/3">
+              <h1 className="text-[38px] font-bold font-display uppercase leading-[0.9] mb-4 tracking-tighter text-black">
+                Make Neil Space
+                <br />
+                Ready
+              </h1>
+              <p className="text-[28px] font-bold text-gray-500 uppercase tracking-tighter">
+                DAY 1 / 7
+              </p>
+            </div>
+            <div className="absolute right-[2px] bottom-[2px] w-[220px] h-[220px] z-0">
+              <img
+                src={astronautRocket}
+                alt="Astronaut"
+                className="w-full h-full object-contain"
+              />
+            </div>
           </div>
         </motion.div>
 
@@ -128,7 +130,7 @@ export default function Home() {
           </div>
 
           {/* Macros Card */}
-          <div className="bg-[#f0f2f5] rounded-3xl p-6 flex flex-col justify-center space-y-5">
+          <div className="bg-[#f0f2f5] rounded-3xl p-6 flex flex-col justify-center space-y-5 -ml-[2px]">
             <div className="flex justify-between items-baseline">
               <span className="font-bold text-[20px] tracking-tighter uppercase">
                 Protein
