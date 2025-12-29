@@ -31,7 +31,7 @@ export default function Home() {
 
   return (
     <Layout>
-      <div className="px-6 pt-12 pb-24">
+      <div className="px-6 pt-12 pb-24 max-w-md mx-auto">
         {/* Hero Card */}
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
@@ -112,7 +112,7 @@ export default function Home() {
 
         {/* Meals Section */}
         <div className="space-y-4">
-          <h3 className="text-xl font-bold font-display uppercase tracking-tighter">Today's Meals</h3>
+          <h3 className="text-[23px] font-bold font-display uppercase tracking-tighter">Today's Meals</h3>
           <AnimatePresence mode="popLayout">
             {meals.length > 0 ? (
               meals.map((meal) => (
@@ -129,7 +129,7 @@ export default function Home() {
                   </div>
                   <div className="flex-1">
                     <div className="flex justify-between items-start">
-                      <h4 className="font-bold text-gray-900 uppercase text-sm tracking-tight">{meal.name}</h4>
+                      <h4 className="font-bold text-gray-900 uppercase text-[16px] tracking-tight">{meal.name}</h4>
                       <button 
                         onClick={() => deleteMeal(meal.id)}
                         className="text-gray-400 hover:text-red-500 transition-colors"
@@ -137,8 +137,8 @@ export default function Home() {
                         <Trash2 size={16} />
                       </button>
                     </div>
-                    <p className="text-xs font-bold text-gray-500 uppercase tracking-tight">{meal.calories} Cals</p>
-                    <div className="flex gap-3 text-[12px] text-gray-400 font-bold uppercase mt-1 items-center">
+                    <p className="text-[14px] font-bold text-gray-500 uppercase tracking-tight">{meal.calories} Cals</p>
+                    <div className="flex gap-3 text-[14px] text-gray-400 font-bold uppercase mt-1 items-center">
                       <span className="flex items-center gap-1"><span className="rotate-45">🍗</span> {meal.protein}g</span>
                       <span className="flex items-center gap-1">🌾 {meal.carbs}g</span>
                       <span className="flex items-center gap-1">🔥 {meal.fats}g</span>
@@ -152,8 +152,8 @@ export default function Home() {
                 animate={{ opacity: 1 }}
                 className="bg-[#f0f2f5] rounded-3xl p-10 text-center border-none"
               >
-                <p className="text-[20px] font-bold text-gray-500 uppercase tracking-tighter mb-1">No meals logged yet today</p>
-                <Link href="/camera" className="text-[15px] font-medium text-gray-400 underline underline-offset-4 decoration-gray-300">
+                <p className="text-[22px] font-bold text-gray-500 uppercase tracking-tighter mb-1">No meals logged yet today</p>
+                <Link href="/camera" className="text-[17px] font-medium text-gray-400 underline underline-offset-4 decoration-gray-300">
                   Go to Camera to add your first meal!
                 </Link>
               </motion.div>
