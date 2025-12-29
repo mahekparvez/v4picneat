@@ -1,60 +1,35 @@
 import { motion } from "framer-motion";
 import Layout from "@/components/layout";
-import { Search, Menu, X } from "lucide-react";
-import foodHero from "@assets/Gemini_Generated_Image_pd099ypd099ypd09_1766760815827.png";
+import { Search } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 
 const CATEGORIES = [
   { name: "Protein", color: "bg-blue-100 text-blue-700 border-blue-200" },
   { name: "Carbs", color: "bg-orange-100 text-orange-700 border-orange-200" },
-  { name: "Fats", color: "bg-yellow-100 text-yellow-700 border-yellow-200" },
   { name: "Vitamins", color: "bg-purple-100 text-purple-700 border-purple-200" },
   { name: "Minerals", color: "bg-green-100 text-green-700 border-green-200" },
+  { name: "Fats", color: "bg-yellow-100 text-yellow-700 border-yellow-200" },
 ];
 
 const DINING_COURTS = [
-  { name: "Wiley Dining Court", distance: "0.2 mi", categories: ["Protein", "Carbs", "Vitamins"], details: ["Vitamin C", "B12"] },
-  { name: "Earhart Dining Court", distance: "0.5 mi", categories: ["Protein", "Fats", "Minerals"], details: ["Zinc", "Iron"] },
-  { name: "Ford Dining Court", distance: "0.8 mi", categories: ["Carbs", "Vitamins", "Minerals"], details: ["Vitamin C", "Magnesium"] },
-  { name: "Hillenbrand", distance: "1.2 mi", categories: ["Protein", "Carbs", "Fats", "Vitamins", "Minerals"], details: ["Vitamin C", "Vitamin D", "Fiber"] },
-  { name: "Windsor Dining", distance: "1.5 mi", categories: ["Protein", "Minerals"], details: ["Calcium"] },
+  { name: "Wiley Dining Court", distance: "0.2 mi", categories: ["Protein", "Carbs", "Vitamins"] },
+  { name: "Earhart Dining Court", distance: "0.5 mi", categories: ["Protein", "Fats", "Minerals"] },
+  { name: "Ford Dining Court", distance: "0.8 mi", categories: ["Carbs", "Vitamins", "Minerals"] },
+  { name: "Hillenbrand", distance: "1.2 mi", categories: ["Protein", "Carbs", "Fats", "Vitamins", "Minerals"] },
+  { name: "Windsor Dining", distance: "1.5 mi", categories: ["Protein", "Minerals"] },
 ];
 
 export default function SearchPage() {
-  const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
-  const filteredCourts = DINING_COURTS.filter(court => {
-    if (selectedCategory) {
-      return court.categories.includes(selectedCategory);
-    }
-    if (!searchQuery) return false; // Don't show anything initially if no query/category
-    const query = searchQuery.toLowerCase();
-    
-    // Check if query matches category name (e.g., "Vitamins")
-    const matchesCategory = court.categories.some(cat => cat.toLowerCase().includes(query));
-    
-    // Specific requirement: if typing "Vitamin C", check if Vitamin C is in details AND "Vitamins" is a category
-    const isVitaminCSearch = query.includes("vitamin c");
-    const hasVitaminsCategory = court.categories.includes("Vitamins");
-    const hasVitaminCDetail = court.details?.some(d => d.toLowerCase().includes("vitamin c"));
-    
-    if (isVitaminCSearch) {
-      return hasVitaminsCategory && hasVitaminCDetail;
-    }
-
-    return (
-      court.name.toLowerCase().includes(query) || 
-      matchesCategory ||
-      court.details?.some(d => d.toLowerCase().includes(query))
-    );
-  });
+  const filteredCourts = DINING_COURTS.filter(court => 
+    selectedCategory ? court.categories.includes(selectedCategory) : false
+  );
 
   return (
     <Layout>
       <div className="px-6 pt-16 pb-6 h-full flex flex-col">
-        {/* Header */}
         <div className="mb-6">
           <h1 className="text-[32px] font-bold text-gray-900 leading-tight tracking-tight mb-1">
             Find Nutrient-Rich Foods
@@ -62,7 +37,6 @@ export default function SearchPage() {
           <p className="text-[18px] text-gray-500 font-medium">What are you looking for today?</p>
         </div>
 
-        {/* Categories Horizontal Scroll */}
         <div className="flex gap-3 overflow-x-auto no-scrollbar mb-8 -mx-6 px-6">
           {CATEGORIES.map((cat) => (
             <button
@@ -80,9 +54,8 @@ export default function SearchPage() {
           ))}
         </div>
 
-        {/* Results Area */}
         <div className="flex-1 overflow-y-auto no-scrollbar pb-24">
-          {selectedCategory || searchQuery ? (
+          {selectedCategory ? (
             <div className="space-y-4">
               {filteredCourts.map((court, i) => (
                 <motion.div 
@@ -94,27 +67,15 @@ export default function SearchPage() {
                 >
                   <h3 className="font-bold font-display uppercase text-[20px] mb-1 tracking-tighter">{court.name}</h3>
                   <p className="text-sm font-bold text-gray-500 mb-4 uppercase tracking-tight">{court.distance}</p>
-                  
                   <div className="flex flex-wrap gap-2">
-                    {court.categories.map(catName => {
-                      const cat = CATEGORIES.find(c => c.name === catName);
-                      return (
-                        <div 
-                          key={catName} 
-                          className={`px-4 py-1.5 rounded-full text-[11px] font-black uppercase border tracking-tighter ${cat?.color}`}
-                        >
-                          {catName}
-                        </div>
-                      );
-                    })}
+                    {court.categories.map(catName => (
+                      <div key={catName} className={cn("px-4 py-1.5 rounded-full text-[11px] font-black uppercase border tracking-tighter", CATEGORIES.find(c => c.name === catName)?.color)}>
+                        {catName}
+                      </div>
+                    ))}
                   </div>
                 </motion.div>
               ))}
-              {filteredCourts.length === 0 && (
-                <div className="text-center py-20">
-                   <p className="text-gray-400 font-bold uppercase tracking-widest text-sm">No matches found</p>
-                </div>
-              )}
             </div>
           ) : (
             <div className="flex flex-col items-center justify-center h-full py-12 opacity-30">

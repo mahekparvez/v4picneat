@@ -2,8 +2,10 @@ import { useState, useRef, useEffect } from "react";
 import Layout from "@/components/layout";
 import { X, Zap, Check, X as CloseIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useLocation } from "wouter";
 
 export default function CameraPage() {
+  const [, setLocation] = useLocation();
   const [hasPhoto, setHasPhoto] = useState(false);
   const [photoData, setPhotoData] = useState<string | null>(null);
   const [flashActive, setFlashActive] = useState(false);
@@ -49,33 +51,47 @@ export default function CameraPage() {
     }
   };
 
+  const logMeal = () => {
+    // Mock model prediction logic
+    const mockMeals = [
+      { name: "Grilled Chicken Salad", calories: 350, protein: 35, carbs: 12, fats: 18 },
+      { name: "Beef Stir Fry", calories: 450, protein: 28, carbs: 45, fats: 22 },
+      { name: "Protein Bowl", calories: 520, protein: 42, carbs: 38, fats: 15 },
+    ];
+    const prediction = mockMeals[Math.floor(Math.random() * mockMeals.length)];
+    
+    const newMeal = {
+      id: Date.now(),
+      image: photoData,
+      ...prediction,
+      timestamp: new Date().toISOString()
+    };
+
+    const saved = localStorage.getItem('logged_meals');
+    const meals = saved ? JSON.parse(saved) : [];
+    localStorage.setItem('logged_meals', JSON.stringify([...meals, newMeal]));
+    
+    setLocation("/");
+  };
+
   const toggleFlash = () => {
     setFlashActive(!flashActive);
-    // In a real app we would use track.applyConstraints({ advanced: [{ torch: true }] })
   };
 
   return (
     <Layout>
       <div className="min-h-screen bg-black relative overflow-hidden">
-        {/* Flash Effect Overlay */}
         {flashActive && !hasPhoto && (
           <div className="absolute inset-0 bg-white/20 z-10 pointer-events-none animate-pulse" />
         )}
 
-        {/* Camera Feed / Photo Preview */}
         <div className="absolute inset-0 flex items-center justify-center">
           {hasPhoto ? (
             <img src={photoData!} className="w-full h-full object-cover" alt="Captured" />
           ) : (
-            <video 
-              ref={videoRef} 
-              autoPlay 
-              playsInline 
-              className="w-full h-full object-cover"
-            />
+            <video ref={videoRef} autoPlay playsInline className="w-full h-full object-cover" />
           )}
           
-          {/* Viewfinder Corners (Upper parts right below thunder, bottom parts right above circle) */}
           {!hasPhoto && (
             <div className="absolute inset-0 flex flex-col items-center justify-between py-32 px-4 pointer-events-none z-20">
               <div className="w-full aspect-[4/3] relative">
@@ -88,59 +104,38 @@ export default function CameraPage() {
           )}
         </div>
 
-        {/* Top Controls */}
         <div className="absolute top-12 left-0 right-0 flex justify-between px-8 z-30">
-          <button 
-            onClick={toggleFlash}
-            className={cn(
-              "p-3 backdrop-blur rounded-full transition-colors",
-              flashActive ? "bg-yellow-400 text-black" : "bg-black/40 text-white"
-            )}
-          >
+          <button onClick={toggleFlash} className={cn("p-3 backdrop-blur rounded-full transition-colors", flashActive ? "bg-yellow-400 text-black" : "bg-black/40 text-white")}>
             <Zap size={24} fill={flashActive ? "currentColor" : "none"} />
           </button>
           {hasPhoto && (
-            <button 
-              onClick={() => setHasPhoto(false)}
-              className="p-3 bg-black/40 backdrop-blur rounded-full text-white"
-            >
+            <button onClick={() => setHasPhoto(false)} className="p-3 bg-black/40 backdrop-blur rounded-full text-white">
               <CloseIcon size={24} />
             </button>
           )}
         </div>
 
-        {/* Capture / Decision Buttons */}
         <div className="absolute bottom-32 left-0 right-0 flex justify-center items-center gap-8 z-30">
           {!hasPhoto ? (
-            <button 
-              onClick={takePicture}
-              className="w-20 h-20 rounded-full border-[6px] border-white flex items-center justify-center p-1 bg-white shadow-lg active:scale-95 transition-transform"
-            >
+            <button onClick={takePicture} className="w-20 h-20 rounded-full border-[6px] border-white flex items-center justify-center p-1 bg-white shadow-lg active:scale-95 transition-transform">
               <div className="w-full h-full rounded-full border-[3px] border-orange-400 bg-transparent" />
             </button>
           ) : (
             <div className="flex gap-6 items-center">
-              <button 
-                onClick={() => setHasPhoto(false)}
-                className="w-16 h-16 rounded-full bg-red-500 flex items-center justify-center text-white shadow-lg active:scale-90 transition-transform"
-              >
-                <X size={32} strokeWidth={3} />
+              <button onClick={() => setHasPhoto(false)} className="w-16 h-16 rounded-full bg-red-500 flex items-center justify-center text-white shadow-lg active:scale-90 transition-transform">
+                <CloseIcon size={32} strokeWidth={3} />
               </button>
               
-              <button className="px-8 py-3 bg-blue-500 text-white font-bold rounded-full shadow-lg uppercase tracking-widest text-sm animate-bounce">
+              <button onClick={logMeal} className="px-8 py-3 bg-blue-500 text-white font-bold rounded-full shadow-lg uppercase tracking-widest text-sm">
                 Analyze Meal
               </button>
 
-              <button 
-                onClick={() => setHasPhoto(false)}
-                className="w-16 h-16 rounded-full bg-green-500 flex items-center justify-center text-white shadow-lg active:scale-90 transition-transform"
-              >
+              <button onClick={logMeal} className="w-16 h-16 rounded-full bg-green-500 flex items-center justify-center text-white shadow-lg active:scale-90 transition-transform">
                 <Check size={32} strokeWidth={3} />
               </button>
             </div>
           )}
         </div>
-
         <canvas ref={canvasRef} className="hidden" />
       </div>
     </Layout>
