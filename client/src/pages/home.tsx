@@ -15,8 +15,9 @@ export default function Home() {
   }, []);
 
   const handleLogout = () => {
+    console.log("Logout clicked!");
     localStorage.clear();
-    setLocation("/welcome");
+    window.location.href = "/welcome";
   };
 
   const deleteMeal = (id: number) => {
