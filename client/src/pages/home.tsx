@@ -1,17 +1,24 @@
 import { useState, useEffect } from "react";
 import Layout from "@/components/layout";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
 import astronautRocket from "@assets/Adobe_Express_-_file_1766602010364.png";
-import { Trash2 } from "lucide-react";
+import { Trash2, LogOut } from "lucide-react";
+import { supabase } from "@/lib/supabase";
 
 export default function Home() {
   const [meals, setMeals] = useState<any[]>([]);
+  const [, setLocation] = useLocation();
   
   useEffect(() => {
     const saved = localStorage.getItem('logged_meals');
     if (saved) setMeals(JSON.parse(saved));
   }, []);
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    setLocation("/");
+  };
 
   const deleteMeal = (id: number) => {
     const updated = meals.filter(m => m.id !== id);
@@ -32,6 +39,17 @@ export default function Home() {
   return (
     <Layout>
       <div className="px-6 pt-12 pb-24 max-w-md mx-auto">
+        {/* Header with Logout */}
+        <div className="flex justify-end mb-4">
+          <button 
+            onClick={handleLogout}
+            className="flex items-center gap-2 text-sm font-bold text-gray-400 hover:text-gray-900 transition-colors uppercase tracking-tight"
+          >
+            <LogOut size={16} />
+            Log Out
+          </button>
+        </div>
+
         {/* Hero Card */}
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
