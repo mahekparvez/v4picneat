@@ -37,7 +37,7 @@ export default function SearchPage() {
           <p className="text-[18px] text-gray-500 font-medium">What are you looking for today?</p>
         </div>
 
-        <div className="flex gap-3 overflow-x-auto no-scrollbar mb-[43px] -mx-6 px-6">
+        <div className="flex gap-3 overflow-x-auto no-scrollbar mb-[46px] -mx-6 px-6">
           {CATEGORIES.map((cat) => (
             <button
               key={cat.name}
