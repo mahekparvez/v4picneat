@@ -1,5 +1,4 @@
 import { useState, useRef, useEffect } from "react";
-import Layout from "@/components/layout";
 import { X, Zap, Check, X as CloseIcon, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useLocation } from "wouter";
@@ -127,8 +126,7 @@ export default function CameraPage() {
   };
 
   return (
-    <Layout>
-      <div className="min-h-screen bg-black relative overflow-hidden">
+    <div className="h-screen bg-black relative overflow-hidden fixed inset-0">
         {flashActive && !hasPhoto && (
           <div className="absolute inset-0 bg-white/20 z-10 pointer-events-none animate-pulse" />
         )}
@@ -242,7 +240,6 @@ export default function CameraPage() {
           )}
         </div>
         <canvas ref={canvasRef} className="hidden" />
-      </div>
-    </Layout>
+    </div>
   );
 }
