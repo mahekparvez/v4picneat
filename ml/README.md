@@ -1,51 +1,44 @@
-# Food Classification Model Integration
+# Food Classification Model - Pic N Eat
 
-This folder contains the ML model integration code for the Pic N Eat app.
+This folder contains the ML model for food classification.
 
-## Current Status
+## Files
 
-The app currently uses a **mock prediction** endpoint that returns random food predictions. 
+- **`train_model.py`** - Training script that downloads data from GitHub and trains the model
+- **`model.py`** - Inference code for making predictions
+- **`inference_server.py`** - Flask server for serving predictions (optional)
+- **`food_classifier.pth`** - Trained model weights (generated after training)
 
-## To Integrate Your PyTorch Model
+## Classes
 
-### Step 1: Upload Your Model
-Place your trained model file (`food_classifier.pth`) in this `ml/` folder.
+The model classifies images into 3 categories:
+- Pancake
+- Pasta  
+- Pizza
 
-### Step 2: Model Architecture
-Your model should match this architecture (from your training code):
+## Training the Model
 
-```python
-class FoodCNN(nn.Module):
-    def __init__(self):
-        super().__init__()
-        self.features = nn.Sequential(
-            nn.Conv2d(3, 16, 3, padding=1),
-            nn.ReLU(),
-            nn.MaxPool2d(2),
-            nn.Conv2d(16, 32, 3, padding=1),
-            nn.ReLU(),
-            nn.MaxPool2d(2),
-            nn.Conv2d(32, 64, 3, padding=1),
-            nn.ReLU(),
-            nn.MaxPool2d(2)
-        )
-        self.classifier = nn.Sequential(
-            nn.Flatten(),
-            nn.Linear(64 * 16 * 16, 128),
-            nn.ReLU(),
-            nn.Linear(128, 3)  # pizza, pasta, pancake
-        )
+To train the model, you need PyTorch installed. Run:
+
+```bash
+cd ml
+python train_model.py
 ```
 
-### Step 3: Update Class Names
-Edit `ml/model.py` and update the `class_names` list to match your model's classes:
+This will:
+1. Clone the training data from `https://github.com/mahekparvez/v3picneat.git`
+2. Train the CNN for 10 epochs
+3. Save the model as `food_classifier.pth`
 
-```python
-class_names = ["pancake", "pasta", "pizza"]  # Update these
-```
+## Using the Model
 
-### Step 4: Add Nutrition Data
-Update the `nutrition_data` dictionary in `ml/model.py` with real nutrition values:
+Once trained, the model is automatically loaded by the app's `/api/predict` endpoint.
+
+Upload the `food_classifier.pth` file to this folder and the app will use it for predictions.
+
+## Nutrition Data
+
+The nutrition values for each class are defined in `model.py`:
 
 ```python
 nutrition_data = {
@@ -55,20 +48,19 @@ nutrition_data = {
 }
 ```
 
-### Step 5: Run the ML Server
-Once PyTorch is properly installed, you can run:
+Update these values as needed for accuracy.
 
-```bash
-cd ml
-python inference_server.py
+## Model Architecture
+
+```
+FoodCNN:
+├── Conv2d(3, 16) + ReLU + MaxPool
+├── Conv2d(16, 32) + ReLU + MaxPool
+├── Conv2d(32, 64) + ReLU + MaxPool
+├── Flatten
+├── Linear(64*16*16, 128) + ReLU
+└── Linear(128, 3) → [pancake, pasta, pizza]
 ```
 
-Then update `server/routes.ts` to forward requests to the Python server instead of using mock data.
-
-## Alternative: Use OpenAI Vision API
-
-For more accurate and robust food recognition, consider using OpenAI's Vision API:
-
-1. Add your OpenAI API key
-2. Update the `/api/predict` endpoint to call the Vision API
-3. The API can identify virtually any food with detailed nutrition estimates
+Input: 128x128 RGB images
+Output: 3-class probabilities
