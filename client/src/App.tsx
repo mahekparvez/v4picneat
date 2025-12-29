@@ -1,7 +1,8 @@
-import { Switch, Route, Redirect } from "wouter";
+import { Switch, Route } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
+import { useEffect, useState } from "react";
 import NotFound from "@/pages/not-found";
 import Home from "@/pages/home";
 import Leaderboard from "@/pages/leaderboard";
@@ -16,10 +17,23 @@ import OnboardingCalculate from "@/pages/onboarding/calculate";
 import OnboardingComplete from "@/pages/onboarding/complete";
 
 function ProtectedHome() {
-  const hasCompletedOnboarding = localStorage.getItem('onboarding_completed') === 'true';
+  const [checking, setChecking] = useState(true);
   
-  if (!hasCompletedOnboarding) {
-    return <Redirect to="/welcome" />;
+  useEffect(() => {
+    const hasCompletedOnboarding = localStorage.getItem('onboarding_completed') === 'true';
+    if (!hasCompletedOnboarding) {
+      window.location.replace("/welcome");
+    } else {
+      setChecking(false);
+    }
+  }, []);
+  
+  if (checking) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+      </div>
+    );
   }
   
   return <Home />;
