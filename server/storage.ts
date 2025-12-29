@@ -117,7 +117,11 @@ class DatabaseStorage implements IStorage {
       .orderBy(desc(userProfiles.currentStreak), desc(userProfiles.totalMiles))
       .limit(50);
     
-    return results;
+    return results.map(r => ({
+      ...r,
+      currentStreak: r.currentStreak || 0,
+      totalMiles: r.totalMiles || 0,
+    }));
   }
 }
 
