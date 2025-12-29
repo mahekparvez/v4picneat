@@ -87,8 +87,8 @@ export default function OnboardingCalculate() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-      <div className="text-center">
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-6">
+      <div className="max-w-md w-full text-center">
         <div className="w-16 h-16 border-4 border-gray-900 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
         <p className="text-xl font-bold font-display uppercase tracking-tight">Calculating...</p>
       </div>
