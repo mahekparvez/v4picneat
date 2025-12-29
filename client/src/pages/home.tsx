@@ -66,6 +66,19 @@ export default function Home() {
                <motion.circle
                  cx="50"
                  cy="50"
+                 r="48"
+                 fill="none"
+                 stroke="#e67e22"
+                 strokeWidth="4"
+                 strokeDasharray="301.59"
+                 initial={{ strokeDashoffset: 301.59 }}
+                 animate={{ strokeDashoffset: 301.59 - (Math.min(totals.calories / calorieLimit, 1) * 301.59) }}
+                 strokeLinecap="round"
+                 transition={{ type: "spring", stiffness: 50, damping: 20 }}
+               />
+               <motion.circle
+                 cx="50"
+                 cy="50"
                  r="2"
                  fill="#e67e22"
                  className="origin-center"
@@ -125,10 +138,10 @@ export default function Home() {
                       </button>
                     </div>
                     <p className="text-xs font-bold text-gray-500 uppercase tracking-tight">{meal.calories} Cals</p>
-                    <div className="flex gap-3 text-[10px] text-gray-400 font-bold uppercase mt-1">
-                      <span>P: {meal.protein}g</span>
-                      <span>C: {meal.carbs}g</span>
-                      <span>F: {meal.fats}g</span>
+                    <div className="flex gap-3 text-[12px] text-gray-400 font-bold uppercase mt-1 items-center">
+                      <span className="flex items-center gap-1"><span className="rotate-45">🍗</span> {meal.protein}g</span>
+                      <span className="flex items-center gap-1">🌾 {meal.carbs}g</span>
+                      <span className="flex items-center gap-1">🔥 {meal.fats}g</span>
                     </div>
                   </div>
                 </motion.div>
