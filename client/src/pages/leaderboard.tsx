@@ -73,7 +73,7 @@ export default function Leaderboard() {
                    tickLine={false} 
                    tick={(props) => {
                      const { x, y, payload } = props;
-                     if (payload.value === 0) return null;
+                     if (payload.value === 0) return <></>;
                      return (
                        <text x={x} y={y} dy={4} textAnchor="end" fontSize={11} fill="#9ca3af" fontWeight="900">
                          {payload.value}
