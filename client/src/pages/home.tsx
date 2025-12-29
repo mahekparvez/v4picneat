@@ -43,16 +43,16 @@ export default function Home() {
 
   return (
     <Layout>
-      <div className="px-6 pt-12 pb-24 max-w-md mx-auto">
+      <div className="px-4 pt-8 pb-24 max-w-md mx-auto">
         {/* Header with Logout */}
-        <div className="flex justify-end mb-4 relative z-[100]">
+        <div className="flex justify-end mb-3 relative z-[100]">
           <a
             href="/welcome"
             onClick={handleLogout}
             data-testid="button-logout"
-            className="flex items-center gap-2 text-sm font-bold text-gray-400 hover:text-gray-900 transition-colors uppercase tracking-tight cursor-pointer p-3 bg-white rounded-lg shadow-sm border border-gray-200"
+            className="flex items-center gap-1.5 text-xs font-bold text-gray-400 hover:text-gray-900 transition-colors uppercase tracking-tight cursor-pointer px-2 py-1"
           >
-            <LogOut size={16} />
+            <LogOut size={14} />
             Log Out
           </a>
         </div>
@@ -61,19 +61,19 @@ export default function Home() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-[#f0f2f5] rounded-3xl p-8 relative overflow-hidden mb-8 h-56"
+          className="bg-[#f0f2f5] rounded-2xl p-5 relative overflow-hidden mb-6 h-40"
         >
-          <div className="relative z-10 w-2/3 -ml-[27px]">
-            <h1 className="text-[38px] font-bold font-display uppercase leading-[0.9] mb-4 tracking-tighter text-black">
+          <div className="relative z-10 w-[60%]">
+            <h1 className="text-[28px] font-bold font-display uppercase leading-[0.95] mb-2 tracking-tighter text-black">
               Make Neil
               <br />
               Space Ready
             </h1>
-            <p className="text-[28px] font-bold text-gray-500 uppercase tracking-tighter">
+            <p className="text-[20px] font-bold text-gray-500 uppercase tracking-tighter">
               DAY 1 / 7
             </p>
           </div>
-          <div className="absolute right-[-10px] bottom-[-20px] w-[240px] h-[240px] z-0">
+          <div className="absolute right-[-5px] bottom-[-15px] w-[160px] h-[160px] z-0">
             <img
               src={astronautRocket}
               alt="Astronaut"
@@ -83,9 +83,9 @@ export default function Home() {
         </motion.div>
 
         {/* Stats Row */}
-        <div className="grid grid-cols-[1fr_1.1fr] gap-6 mb-8">
+        <div className="grid grid-cols-[1fr_1.2fr] gap-4 mb-6">
           {/* Calorie Ring */}
-          <div className="aspect-square relative flex items-center justify-center">
+          <div className="aspect-square relative flex items-center justify-center max-w-[140px]">
             <div className="absolute inset-0 rounded-full border-[2px] border-gray-100" />
             <svg
               className="absolute inset-0 w-full h-full -rotate-90"
@@ -118,38 +118,38 @@ export default function Home() {
               />
             </svg>
             <div className="text-center z-10">
-              <div className="text-[52px] font-bold font-display tracking-tighter leading-none">
+              <div className="text-[36px] font-bold font-display tracking-tighter leading-none">
                 {totals.calories}
               </div>
-              <div className="text-[18px] text-gray-400 font-bold tracking-tighter mt-1">
+              <div className="text-[14px] text-gray-400 font-bold tracking-tighter mt-0.5">
                 /{calorieLimit}
               </div>
             </div>
           </div>
 
           {/* Macros Card */}
-          <div className="bg-[#f0f2f5] rounded-3xl p-6 flex flex-col justify-center space-y-5">
+          <div className="bg-[#f0f2f5] rounded-2xl p-4 flex flex-col justify-center space-y-3">
             <div className="flex justify-between items-baseline">
-              <span className="font-bold text-[20px] tracking-tighter uppercase">
+              <span className="font-bold text-[16px] tracking-tighter uppercase">
                 Protein
               </span>
-              <span className="text-gray-500 text-[18px] font-bold tracking-tighter">
+              <span className="text-gray-500 text-[15px] font-bold tracking-tighter">
                 {totals.protein}g
               </span>
             </div>
             <div className="flex justify-between items-baseline">
-              <span className="font-bold text-[20px] tracking-tighter uppercase">
+              <span className="font-bold text-[16px] tracking-tighter uppercase">
                 Carbs
               </span>
-              <span className="text-gray-500 text-[18px] font-bold tracking-tighter">
+              <span className="text-gray-500 text-[15px] font-bold tracking-tighter">
                 {totals.carbs}g
               </span>
             </div>
             <div className="flex justify-between items-baseline">
-              <span className="font-bold text-[20px] tracking-tighter uppercase">
+              <span className="font-bold text-[16px] tracking-tighter uppercase">
                 Fats
               </span>
-              <span className="text-gray-500 text-[18px] font-bold tracking-tighter">
+              <span className="text-gray-500 text-[15px] font-bold tracking-tighter">
                 {totals.fats}g
               </span>
             </div>
@@ -157,8 +157,8 @@ export default function Home() {
         </div>
 
         {/* Meals Section */}
-        <div className="space-y-4">
-          <h3 className="text-[23px] font-bold font-display uppercase tracking-tighter">
+        <div className="space-y-3">
+          <h3 className="text-[18px] font-bold font-display uppercase tracking-tighter">
             Today's Meals
           </h3>
           <AnimatePresence mode="popLayout">
@@ -170,10 +170,10 @@ export default function Home() {
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, scale: 0.95 }}
-                  className="bg-[#f0f2f5] rounded-2xl p-4 flex gap-4 items-center relative group"
+                  className="bg-[#f0f2f5] rounded-2xl p-3 flex gap-3 items-center relative group"
                   data-testid={`meal-card-${meal.id}`}
                 >
-                  <div className="w-16 h-16 bg-white rounded-xl overflow-hidden shrink-0 border border-gray-100">
+                  <div className="w-14 h-14 bg-white rounded-xl overflow-hidden shrink-0 border border-gray-100">
                     <img
                       src={meal.image}
                       alt={meal.name}
@@ -182,7 +182,7 @@ export default function Home() {
                   </div>
                   <div className="flex-1">
                     <div className="flex justify-between items-start">
-                      <h4 className="font-bold text-gray-900 uppercase text-[16px] tracking-tight">
+                      <h4 className="font-bold text-gray-900 uppercase text-[14px] tracking-tight">
                         {meal.name}
                       </h4>
                       <button
@@ -190,21 +190,21 @@ export default function Home() {
                         className="text-gray-400 hover:text-red-500 transition-colors"
                         data-testid={`button-delete-${meal.id}`}
                       >
-                        <Trash2 size={16} />
+                        <Trash2 size={14} />
                       </button>
                     </div>
-                    <p className="text-[14px] font-bold text-gray-500 uppercase tracking-tight">
+                    <p className="text-[12px] font-bold text-gray-500 uppercase tracking-tight">
                       {meal.calories} Cals
                     </p>
-                    <div className="flex gap-[3px] text-[14px] text-gray-400 font-bold uppercase mt-1 items-center">
-                      <span className="flex items-center gap-1">
-                        <span className="inline-block rotate-[165deg]">🍗</span>{" "}
+                    <div className="flex gap-[3px] text-[12px] text-gray-400 font-bold uppercase mt-0.5 items-center">
+                      <span className="flex items-center gap-0.5">
+                        <span className="inline-block rotate-[135deg]">🍗</span>{" "}
                         {meal.protein}g
                       </span>
-                      <span className="flex items-center gap-1">
+                      <span className="flex items-center gap-0.5">
                         🌾 {meal.carbs}g
                       </span>
-                      <span className="flex items-center gap-1">
+                      <span className="flex items-center gap-0.5">
                         🔥 {meal.fats}g
                       </span>
                     </div>
@@ -215,14 +215,14 @@ export default function Home() {
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="bg-[#f0f2f5] rounded-3xl p-10 text-center border-none"
+                className="bg-[#f0f2f5] rounded-2xl p-6 text-center border-none"
               >
-                <p className="text-[22px] font-bold text-gray-500 uppercase tracking-tighter mb-1">
+                <p className="text-[16px] font-bold text-gray-500 uppercase tracking-tighter mb-1">
                   No meals logged yet
                 </p>
                 <Link
                   href="/camera"
-                  className="text-[14px] font-medium text-gray-400 underline underline-offset-4 decoration-gray-300"
+                  className="text-[12px] font-medium text-gray-400"
                 >
                   Go to Camera to add your first meal!
                 </Link>
