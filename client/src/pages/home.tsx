@@ -101,18 +101,18 @@ export default function Home() {
           </div>
 
           {/* Macros Card */}
-          <div className="bg-[#f0f2f5] rounded-3xl p-6 flex flex-col justify-center space-y-5">
-            <div className="flex justify-between items-baseline">
-              <span className="font-bold text-[22px] tracking-tighter uppercase">Protein</span>
-              <span className="text-gray-500 text-[20px] font-bold tracking-tighter">{totals.protein}g</span>
+          <div className="bg-[#f0f2f5] rounded-2xl p-5 flex flex-col justify-center space-y-4">
+            <div className="flex justify-between items-center">
+              <span className="font-bold text-[17px] text-gray-800 tracking-tight">PROTEIN</span>
+              <span className="text-gray-400 text-[17px] font-semibold">{totals.protein}g</span>
             </div>
-             <div className="flex justify-between items-baseline">
-              <span className="font-bold text-[22px] tracking-tighter uppercase">Carbs</span>
-              <span className="text-gray-500 text-[20px] font-bold tracking-tighter">{totals.carbs}g</span>
+            <div className="flex justify-between items-center">
+              <span className="font-bold text-[17px] text-gray-800 tracking-tight">CARBS</span>
+              <span className="text-gray-400 text-[17px] font-semibold">{totals.carbs}g</span>
             </div>
-             <div className="flex justify-between items-baseline">
-              <span className="font-bold text-[22px] tracking-tighter uppercase">Fats</span>
-              <span className="text-gray-500 text-[20px] font-bold tracking-tighter">{totals.fats}g</span>
+            <div className="flex justify-between items-center">
+              <span className="font-bold text-[17px] text-gray-800 tracking-tight">FATS</span>
+              <span className="text-gray-400 text-[17px] font-semibold">{totals.fats}g</span>
             </div>
           </div>
         </div>
