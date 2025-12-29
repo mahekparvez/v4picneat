@@ -1,4 +1,4 @@
-import { Switch, Route } from "wouter";
+import { Switch, Route, Redirect } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
@@ -15,6 +15,16 @@ import OnboardingHeightWeight from "@/pages/onboarding/height-weight";
 import OnboardingCalculate from "@/pages/onboarding/calculate";
 import OnboardingComplete from "@/pages/onboarding/complete";
 
+function ProtectedHome() {
+  const hasCompletedOnboarding = localStorage.getItem('onboarding_completed') === 'true';
+  
+  if (!hasCompletedOnboarding) {
+    return <Redirect to="/welcome" />;
+  }
+  
+  return <Home />;
+}
+
 function Router() {
   return (
     <Switch>
@@ -30,7 +40,7 @@ function Router() {
       <Route path="/onboarding/complete" component={OnboardingComplete} />
 
       {/* Main App Routes */}
-      <Route path="/" component={Home} />
+      <Route path="/" component={ProtectedHome} />
       <Route path="/leaderboard" component={Leaderboard} />
       <Route path="/camera" component={CameraPage} />
       <Route path="/search" component={SearchPage} />
