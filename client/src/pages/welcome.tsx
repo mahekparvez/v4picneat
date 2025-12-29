@@ -1,6 +1,6 @@
 import { Link } from 'wouter';
 import { motion } from 'framer-motion';
-import astronautRocket from "@assets/cartoon_astronaut_riding_a_rocket.png";
+import astronautRocket from "@assets/Eat_Page_1767000174644.png";
 
 export default function WelcomePage() {
   return (
