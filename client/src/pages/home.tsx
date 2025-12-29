@@ -39,10 +39,10 @@ export default function Home() {
           className="bg-[#f0f2f5] rounded-3xl p-8 relative overflow-hidden mb-8 h-56"
         >
           <div className="relative z-10 w-2/3 -ml-[22px]">
-            <h1 className="text-[38px] font-bold font-display uppercase leading-[0.9] mb-4 tracking-tighter text-black">
+            <h1 className="text-[40px] font-bold font-display uppercase leading-[0.9] mb-4 tracking-tighter text-black">
               Make Neil<br />Space Ready
             </h1>
-            <p className="text-[28px] font-bold text-gray-500 uppercase tracking-tighter">DAY 1 / 7</p>
+            <p className="text-[30px] font-bold text-gray-500 uppercase tracking-tighter">DAY 1 / 7</p>
           </div>
           <div className="absolute right-[-10px] bottom-[-20px] w-[240px] h-[240px] z-0">
              <img src={astronautRocket} alt="Astronaut" className="w-full h-full object-contain" />
