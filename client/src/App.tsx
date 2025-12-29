@@ -7,6 +7,12 @@ import Home from "@/pages/home";
 import Leaderboard from "@/pages/leaderboard";
 import SearchPage from "@/pages/search";
 import CameraPage from "@/pages/camera";
+import OnboardingGender from "@/pages/onboarding/gender";
+import OnboardingWorkouts from "@/pages/onboarding/workouts";
+import OnboardingGoals from "@/pages/onboarding/goals";
+import OnboardingHeightWeight from "@/pages/onboarding/height-weight";
+import OnboardingCalculate from "@/pages/onboarding/calculate";
+import OnboardingComplete from "@/pages/onboarding/complete";
 
 function Router() {
   return (
@@ -15,6 +21,15 @@ function Router() {
       <Route path="/leaderboard" component={Leaderboard} />
       <Route path="/camera" component={CameraPage} />
       <Route path="/search" component={SearchPage} />
+      
+      {/* Onboarding Routes */}
+      <Route path="/onboarding/gender" component={OnboardingGender} />
+      <Route path="/onboarding/workouts" component={OnboardingWorkouts} />
+      <Route path="/onboarding/goals" component={OnboardingGoals} />
+      <Route path="/onboarding/height-weight" component={OnboardingHeightWeight} />
+      <Route path="/onboarding/calculate" component={OnboardingCalculate} />
+      <Route path="/onboarding/complete" component={OnboardingComplete} />
+      
       <Route component={NotFound} />
     </Switch>
   );
