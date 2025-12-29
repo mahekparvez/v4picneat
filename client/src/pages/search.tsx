@@ -3,6 +3,7 @@ import Layout from "@/components/layout";
 import { Search, Menu, X } from "lucide-react";
 import foodHero from "@assets/Gemini_Generated_Image_pd099ypd099ypd09_1766760815827.png";
 import { useState } from "react";
+import { cn } from "@/lib/utils";
 
 const CATEGORIES = [
   { name: "Protein", color: "bg-blue-100 text-blue-700 border-blue-200" },
