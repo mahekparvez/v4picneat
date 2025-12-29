@@ -22,9 +22,13 @@ const DINING_COURTS = [
 
 export default function SearchPage() {
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
   const filteredCourts = DINING_COURTS.filter(court => {
-    if (!searchQuery) return true;
+    if (selectedCategory) {
+      return court.categories.includes(selectedCategory);
+    }
+    if (!searchQuery) return false; // Don't show anything initially if no query/category
     const query = searchQuery.toLowerCase();
     
     // Check if query matches category name (e.g., "Vitamins")
@@ -48,65 +52,75 @@ export default function SearchPage() {
 
   return (
     <Layout>
-      <div className="px-6 pt-12 pb-6 h-full flex flex-col">
-        {/* Search Header */}
-        <div className="relative mb-6 shrink-0">
-          <div className="bg-gray-200/60 rounded-xl h-14 flex items-center px-4 gap-3 focus-within:ring-2 focus-within:ring-blue-500 transition-all">
-            <Menu className="w-5 h-5 text-gray-500" />
-            <input 
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search Vitamin C, Carbohydrates..."
-              className="bg-transparent border-none focus:ring-0 text-gray-900 text-sm flex-1 font-bold uppercase tracking-tight placeholder:text-gray-400 outline-none"
-            />
-            {searchQuery ? (
-              <button onClick={() => setSearchQuery("")}>
-                <X className="w-5 h-5 text-gray-500" />
-              </button>
-            ) : (
-              <Search className="w-5 h-5 text-gray-500" />
-            )}
-          </div>
+      <div className="px-6 pt-16 pb-6 h-full flex flex-col">
+        {/* Header */}
+        <div className="mb-6">
+          <h1 className="text-[32px] font-bold text-gray-900 leading-tight tracking-tight mb-1">
+            Find Nutrient-Rich Foods
+          </h1>
+          <p className="text-[18px] text-gray-500 font-medium">What are you looking for today?</p>
         </div>
 
-        {/* Hero Image */}
-        <div className="w-full rounded-2xl overflow-hidden mb-4 shrink-0 shadow-lg border-2 border-white">
-          <img src={foodHero} alt="Food Hero" className="w-full h-auto object-cover" />
+        {/* Categories Horizontal Scroll */}
+        <div className="flex gap-3 overflow-x-auto no-scrollbar mb-8 -mx-6 px-6">
+          {CATEGORIES.map((cat) => (
+            <button
+              key={cat.name}
+              onClick={() => setSelectedCategory(selectedCategory === cat.name ? null : cat.name)}
+              className={cn(
+                "px-6 py-3 rounded-2xl text-[14px] font-bold uppercase border transition-all whitespace-nowrap",
+                selectedCategory === cat.name 
+                  ? "bg-gray-900 text-white border-gray-900" 
+                  : `${cat.color} opacity-80 hover:opacity-100`
+              )}
+            >
+              {cat.name}
+            </button>
+          ))}
         </div>
 
-        {/* Dining Court List */}
-        <div className="space-y-3 flex-1 overflow-y-auto no-scrollbar pb-24">
-          {filteredCourts.length > 0 ? (
-            filteredCourts.map((court, i) => (
-              <motion.div 
-                key={court.name}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.05 }}
-                className="bg-gray-100 rounded-2xl p-5 border border-gray-200/50 shadow-sm"
-              >
-                <h3 className="font-bold font-display uppercase text-lg mb-1 tracking-tighter">{court.name}</h3>
-                <p className="text-sm font-bold text-gray-500 mb-3 uppercase tracking-tight">{court.distance}</p>
-                
-                <div className="flex flex-wrap gap-2">
-                  {court.categories.map(catName => {
-                    const cat = CATEGORIES.find(c => c.name === catName);
-                    return (
-                      <div 
-                        key={catName} 
-                        className={`px-3 py-1 rounded-full text-[10px] font-black uppercase border tracking-tighter ${cat?.color}`}
-                      >
-                        {catName}
-                      </div>
-                    );
-                  })}
+        {/* Results Area */}
+        <div className="flex-1 overflow-y-auto no-scrollbar pb-24">
+          {selectedCategory || searchQuery ? (
+            <div className="space-y-4">
+              {filteredCourts.map((court, i) => (
+                <motion.div 
+                  key={court.name}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.05 }}
+                  className="bg-[#f0f2f5] rounded-3xl p-6 shadow-sm"
+                >
+                  <h3 className="font-bold font-display uppercase text-[20px] mb-1 tracking-tighter">{court.name}</h3>
+                  <p className="text-sm font-bold text-gray-500 mb-4 uppercase tracking-tight">{court.distance}</p>
+                  
+                  <div className="flex flex-wrap gap-2">
+                    {court.categories.map(catName => {
+                      const cat = CATEGORIES.find(c => c.name === catName);
+                      return (
+                        <div 
+                          key={catName} 
+                          className={`px-4 py-1.5 rounded-full text-[11px] font-black uppercase border tracking-tighter ${cat?.color}`}
+                        >
+                          {catName}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </motion.div>
+              ))}
+              {filteredCourts.length === 0 && (
+                <div className="text-center py-20">
+                   <p className="text-gray-400 font-bold uppercase tracking-widest text-sm">No matches found</p>
                 </div>
-              </motion.div>
-            ))
+              )}
+            </div>
           ) : (
-            <div className="text-center py-10">
-              <p className="text-gray-400 font-bold uppercase tracking-widest text-sm">No matches found</p>
+            <div className="flex flex-col items-center justify-center h-full py-12 opacity-30">
+              <Search className="w-16 h-16 text-gray-400 mb-4" />
+              <p className="text-[18px] font-bold text-gray-400 text-center px-12">
+                Select a nutrient above to find foods
+              </p>
             </div>
           )}
         </div>
