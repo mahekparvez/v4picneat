@@ -14,8 +14,9 @@ export default function Home() {
     if (saved) setMeals(JSON.parse(saved));
   }, []);
 
-  const handleLogout = () => {
-    console.log("Logout clicked!");
+  const handleLogout = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
     localStorage.clear();
     window.location.href = "/welcome";
   };
@@ -39,16 +40,16 @@ export default function Home() {
     <Layout>
       <div className="px-6 pt-12 pb-24 max-w-md mx-auto">
         {/* Header with Logout */}
-        <div className="flex justify-end mb-4 relative z-50">
-          <button 
-            type="button"
+        <div className="flex justify-end mb-4 relative z-[100]">
+          <a 
+            href="/welcome"
             onClick={handleLogout}
             data-testid="button-logout"
-            className="flex items-center gap-2 text-sm font-bold text-gray-400 hover:text-gray-900 transition-colors uppercase tracking-tight cursor-pointer p-2 -m-2"
+            className="flex items-center gap-2 text-sm font-bold text-gray-400 hover:text-gray-900 transition-colors uppercase tracking-tight cursor-pointer p-3 bg-white rounded-lg shadow-sm border border-gray-200"
           >
             <LogOut size={16} />
             Log Out
-          </button>
+          </a>
         </div>
 
         {/* Hero Card */}
