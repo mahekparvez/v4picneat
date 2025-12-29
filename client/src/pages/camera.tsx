@@ -184,7 +184,7 @@ export default function CameraPage() {
           )}
         </div>
 
-        <div className="absolute bottom-32 left-0 right-0 flex justify-center items-center gap-8 z-30">
+        <div className="absolute bottom-[5px] left-0 right-0 flex justify-center items-center gap-8 z-30 pb-safe">
           {!hasPhoto ? (
             <button 
               onClick={takePicture} 
