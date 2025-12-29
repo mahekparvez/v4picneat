@@ -64,17 +64,17 @@ export default function Home() {
           className="bg-[#f0f2f5] rounded-3xl p-[2px] relative overflow-hidden mb-8"
         >
           <div className="bg-[#f0f2f5] rounded-[calc(1.5rem-2px)] p-6 h-56 relative">
-            <div className="relative z-10 w-2/3">
+            <div className="relative z-10 w-2/3 ml-[1px]">
               <h1 className="text-[38px] font-bold font-display uppercase leading-[0.9] mb-4 tracking-tighter text-black">
-                Make Neil Space
+                Make Neil
                 <br />
-                Ready
+                Space Ready
               </h1>
               <p className="text-[28px] font-bold text-gray-500 uppercase tracking-tighter">
                 DAY 1 / 7
               </p>
             </div>
-            <div className="absolute right-[2px] bottom-[2px] w-[220px] h-[220px] z-0">
+            <div className="absolute right-0 bottom-[2px] w-[220px] h-[220px] z-0">
               <img
                 src={astronautRocket}
                 alt="Astronaut"
