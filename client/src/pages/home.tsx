@@ -85,7 +85,7 @@ export default function Home() {
         </motion.div>
 
         {/* Stats Row */}
-        <div className="grid grid-cols-[1fr_1.1fr] gap-6 mb-8">
+        <div className="grid grid-cols-[1fr_1.1fr] gap-6 mb-8 -ml-[1px]">
           {/* Calorie Ring */}
           <div className="aspect-square relative flex items-center justify-center">
             <div className="absolute inset-0 rounded-full border-[2px] border-gray-100" />
