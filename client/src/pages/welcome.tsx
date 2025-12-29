@@ -1,8 +1,32 @@
-import { Link } from 'wouter';
+import { useEffect } from 'react';
+import { useLocation } from 'wouter';
 import { motion } from 'framer-motion';
 import astronautRocket from "@assets/Eat_Page_1767000174644.png";
+import { useAuth } from '@/hooks/use-auth';
 
 export default function WelcomePage() {
+  const [, setLocation] = useLocation();
+  const { isAuthenticated, isLoading } = useAuth();
+
+  useEffect(() => {
+    // Redirect to home if already authenticated
+    if (!isLoading && isAuthenticated) {
+      setLocation('/');
+    }
+  }, [isAuthenticated, isLoading, setLocation]);
+
+  const handleGetStarted = () => {
+    window.location.href = '/api/login';
+  };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 p-6 flex flex-col items-center justify-center relative overflow-hidden">
       {/* Background decoration */}
@@ -34,17 +58,21 @@ export default function WelcomePage() {
           transition={{ delay: 0.2, duration: 0.5 }}
           className="space-y-4"
         >
-          <Link href="/signup">
-            <button className="w-full bg-gray-900 text-white py-4 rounded-full font-bold text-lg uppercase tracking-tight hover:bg-gray-800 transition-all shadow-lg active:scale-98">
-              Get Started
-            </button>
-          </Link>
+          <button
+            onClick={handleGetStarted}
+            data-testid="button-get-started"
+            className="w-full bg-gray-900 text-white py-4 rounded-full font-bold text-lg uppercase tracking-tight hover:bg-gray-800 transition-all shadow-lg active:scale-98"
+          >
+            Get Started
+          </button>
           
-          <Link href="/login">
-            <button className="w-full bg-white text-gray-900 py-4 rounded-full font-bold text-lg uppercase tracking-tight hover:bg-gray-50 transition-all border-2 border-gray-200 active:scale-98">
-              I already have an account
-            </button>
-          </Link>
+          <button
+            onClick={handleGetStarted}
+            data-testid="button-login"
+            className="w-full bg-white text-gray-900 py-4 rounded-full font-bold text-lg uppercase tracking-tight hover:bg-gray-50 transition-all border-2 border-gray-200 active:scale-98"
+          >
+            I already have an account
+          </button>
         </motion.div>
       </div>
     </div>

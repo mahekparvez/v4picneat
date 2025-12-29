@@ -4,37 +4,71 @@ import { Link, useLocation } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
 import astronautRocket from "@assets/Adobe_Express_-_file_1766602010364.png";
 import { Trash2, LogOut } from "lucide-react";
-import { supabase } from "@/lib/supabase";
+import { useAuth } from "@/hooks/use-auth";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import type { Meal } from "@shared/schema";
+
+async function fetchMeals(): Promise<Meal[]> {
+  const response = await fetch("/api/meals?date=" + new Date().toISOString(), {
+    credentials: "include",
+  });
+  
+  if (!response.ok) {
+    throw new Error("Failed to fetch meals");
+  }
+  
+  return response.json();
+}
+
+async function deleteMeal(id: string): Promise<void> {
+  const response = await fetch(`/api/meals/${id}`, {
+    method: "DELETE",
+    credentials: "include",
+  });
+  
+  if (!response.ok) {
+    throw new Error("Failed to delete meal");
+  }
+}
 
 export default function Home() {
-  const [meals, setMeals] = useState<any[]>([]);
   const [, setLocation] = useLocation();
+  const { user, isLoading: authLoading } = useAuth();
+  const queryClient = useQueryClient();
   
-  useEffect(() => {
-    const saved = localStorage.getItem('logged_meals');
-    if (saved) setMeals(JSON.parse(saved));
-  }, []);
+  const { data: meals = [], isLoading: mealsLoading } = useQuery({
+    queryKey: ["/api/meals"],
+    queryFn: fetchMeals,
+    enabled: !!user,
+  });
 
-  const handleLogout = async () => {
-    await supabase.auth.signOut();
-    setLocation("/");
-  };
+  const deleteMealMutation = useMutation({
+    mutationFn: deleteMeal,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/meals"] });
+    },
+  });
 
-  const deleteMeal = (id: number) => {
-    const updated = meals.filter(m => m.id !== id);
-    setMeals(updated);
-    localStorage.setItem('logged_meals', JSON.stringify(updated));
+  const handleLogout = () => {
+    window.location.href = "/api/logout";
   };
 
   const totals = meals.reduce((acc, meal) => ({
     calories: acc.calories + meal.calories,
-    protein: acc.protein + meal.protein,
-    carbs: acc.carbs + meal.carbs,
-    fats: acc.fats + meal.fats,
+    protein: acc.protein + meal.proteinG,
+    carbs: acc.carbs + meal.carbsG,
+    fats: acc.fats + meal.fatsG,
   }), { calories: 0, protein: 0, carbs: 0, fats: 0 });
 
   const calorieLimit = 1809;
-  const progress = Math.min((totals.calories / calorieLimit) * 360, 360);
+
+  if (authLoading || mealsLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
+      </div>
+    );
+  }
 
   return (
     <Layout>
@@ -43,6 +77,7 @@ export default function Home() {
         <div className="flex justify-end mb-4">
           <button 
             onClick={handleLogout}
+            data-testid="button-logout"
             className="flex items-center gap-2 text-sm font-bold text-gray-400 hover:text-gray-900 transition-colors uppercase tracking-tight"
           >
             <LogOut size={16} />
@@ -58,7 +93,7 @@ export default function Home() {
         >
           <div className="relative z-10 w-2/3 -ml-[27px]">
             <h1 className="text-[38px] font-bold font-display uppercase leading-[0.9] mb-4 tracking-tighter text-black">
-              Make Neil<br />Space Ready
+              Make {user?.firstName || 'You'}<br />Space Ready
             </h1>
             <p className="text-[28px] font-bold text-gray-500 uppercase tracking-tighter">DAY 1 / 7</p>
           </div>
@@ -105,15 +140,15 @@ export default function Home() {
           <div className="bg-[#f0f2f5] rounded-3xl p-6 flex flex-col justify-center space-y-5">
             <div className="flex justify-between items-baseline">
               <span className="font-bold text-[22px] tracking-tighter uppercase">Protein</span>
-              <span className="text-gray-500 text-[20px] font-bold tracking-tighter">{totals.protein}g</span>
+              <span className="text-gray-500 text-[20px] font-bold tracking-tighter">{Math.round(totals.protein)}g</span>
             </div>
              <div className="flex justify-between items-baseline">
               <span className="font-bold text-[22px] tracking-tighter uppercase">Carbs</span>
-              <span className="text-gray-500 text-[20px] font-bold tracking-tighter">{totals.carbs}g</span>
+              <span className="text-gray-500 text-[20px] font-bold tracking-tighter">{Math.round(totals.carbs)}g</span>
             </div>
              <div className="flex justify-between items-baseline">
               <span className="font-bold text-[22px] tracking-tighter uppercase">Fats</span>
-              <span className="text-gray-500 text-[20px] font-bold tracking-tighter">{totals.fats}g</span>
+              <span className="text-gray-500 text-[20px] font-bold tracking-tighter">{Math.round(totals.fats)}g</span>
             </div>
           </div>
         </div>
@@ -131,25 +166,31 @@ export default function Home() {
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, scale: 0.95 }}
                   className="bg-[#f0f2f5] rounded-2xl p-4 flex gap-4 items-center relative group"
+                  data-testid={`meal-card-${meal.id}`}
                 >
                   <div className="w-16 h-16 bg-white rounded-xl overflow-hidden shrink-0 border border-gray-100">
-                    <img src={meal.image} alt={meal.name} className="w-full h-full object-cover" />
+                    {meal.imageUrl ? (
+                      <img src={meal.imageUrl} alt={meal.foodName} className="w-full h-full object-cover" />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-2xl">🍽️</div>
+                    )}
                   </div>
                   <div className="flex-1">
                     <div className="flex justify-between items-start">
-                      <h4 className="font-bold text-gray-900 uppercase text-[16px] tracking-tight">{meal.name}</h4>
+                      <h4 className="font-bold text-gray-900 uppercase text-[16px] tracking-tight" data-testid={`meal-name-${meal.id}`}>{meal.foodName}</h4>
                       <button 
-                        onClick={() => deleteMeal(meal.id)}
+                        onClick={() => deleteMealMutation.mutate(meal.id)}
                         className="text-gray-400 hover:text-red-500 transition-colors"
+                        data-testid={`button-delete-${meal.id}`}
                       >
                         <Trash2 size={16} />
                       </button>
                     </div>
-                    <p className="text-[14px] font-bold text-gray-500 uppercase tracking-tight">{meal.calories} Cals</p>
+                    <p className="text-[14px] font-bold text-gray-500 uppercase tracking-tight" data-testid={`meal-calories-${meal.id}`}>{meal.calories} Cals</p>
                     <div className="flex gap-3 text-[14px] text-gray-400 font-bold uppercase mt-1 items-center">
-                      <span className="flex items-center gap-1"><span className="rotate-45">🍗</span> {meal.protein}g</span>
-                      <span className="flex items-center gap-1">🌾 {meal.carbs}g</span>
-                      <span className="flex items-center gap-1">🔥 {meal.fats}g</span>
+                      <span className="flex items-center gap-1"><span className="rotate-45">🍗</span> {Math.round(meal.proteinG)}g</span>
+                      <span className="flex items-center gap-1">🌾 {Math.round(meal.carbsG)}g</span>
+                      <span className="flex items-center gap-1">🔥 {Math.round(meal.fatsG)}g</span>
                     </div>
                   </div>
                 </motion.div>

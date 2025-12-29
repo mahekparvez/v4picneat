@@ -21,10 +21,18 @@ import { ProtectedRoute } from "@/components/ProtectedRoute";
 function Router() {
   return (
     <Switch>
-      {/* Auth Routes */}
+      {/* Public Routes */}
       <Route path="/welcome" component={WelcomePage} />
       <Route path="/login" component={LoginPage} />
       <Route path="/signup" component={SignupPage} />
+      
+      {/* Onboarding Routes (after authentication) */}
+      <Route path="/onboarding/gender" component={OnboardingGender} />
+      <Route path="/onboarding/workouts" component={OnboardingWorkouts} />
+      <Route path="/onboarding/goals" component={OnboardingGoals} />
+      <Route path="/onboarding/height-weight" component={OnboardingHeightWeight} />
+      <Route path="/onboarding/calculate" component={OnboardingCalculate} />
+      <Route path="/onboarding/complete" component={OnboardingComplete} />
 
       {/* Protected Routes */}
       <Route path="/">
@@ -55,14 +63,6 @@ function Router() {
           </ProtectedRoute>
         )}
       </Route>
-      
-      {/* Onboarding Routes */}
-      <Route path="/onboarding/gender" component={OnboardingGender} />
-      <Route path="/onboarding/workouts" component={OnboardingWorkouts} />
-      <Route path="/onboarding/goals" component={OnboardingGoals} />
-      <Route path="/onboarding/height-weight" component={OnboardingHeightWeight} />
-      <Route path="/onboarding/calculate" component={OnboardingCalculate} />
-      <Route path="/onboarding/complete" component={OnboardingComplete} />
       
       <Route component={NotFound} />
     </Switch>
