@@ -10,7 +10,7 @@ import shutil
 # ---------------------------
 # 1. Download Data from GitHub
 # ---------------------------
-repo_url = "https://github.com/mahekparvez/v3picneat.git"
+repo_url = "https://github.com/mahekparvez/pic-n-eat.git"
 data_dir = Path("v3picneat")
 
 # If folder exists, remove it to ensure a fresh download
