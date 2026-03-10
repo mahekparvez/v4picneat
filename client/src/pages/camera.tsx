@@ -1,8 +1,10 @@
 import { useState, useRef, useEffect } from "react";
 import Layout from "@/components/layout";
-import { X, Zap, Check, X as CloseIcon, Loader2 } from "lucide-react";
+import { X, Zap, Check, X as CloseIcon, Loader2, Camera, Upload } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useLocation } from "wouter";
+
+const API_BASE = import.meta.env.VITE_PICNEAT_API || "http://localhost:8000";
 
 interface PredictionResult {
   food_name: string;
@@ -11,6 +13,16 @@ interface PredictionResult {
   carbs: number;
   fats: number;
   confidence: number;
+  foods?: { name: string; portion_grams: number; calories: number; protein: number; carbs: number; fats: number; confidence: number; source: string }[];
+}
+
+interface MealAnalysisResponse {
+  foods: { name: string; portion_grams: number; calories: number; protein: number; carbs: number; fats: number; confidence: number; source: string }[];
+  total_calories: number;
+  total_protein: number;
+  total_carbs: number;
+  total_fats: number;
+  analysis_time_ms: number;
 }
 
 export default function CameraPage() {
@@ -20,30 +32,54 @@ export default function CameraPage() {
   const [flashActive, setFlashActive] = useState(false);
   const [analyzing, setAnalyzing] = useState(false);
   const [prediction, setPrediction] = useState<PredictionResult | null>(null);
+  const [analysisError, setAnalysisError] = useState<string | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [cameraError, setCameraError] = useState<string | null>(null);
+  const [cameraReady, setCameraReady] = useState(false);
 
   useEffect(() => {
+    let stream: MediaStream | null = null;
     async function setupCamera() {
+      setCameraError(null);
       try {
-        const stream = await navigator.mediaDevices.getUserMedia({ 
+        stream = await navigator.mediaDevices.getUserMedia({
           video: { facingMode: 'environment' },
-          audio: false 
+          audio: false,
         });
         if (videoRef.current) {
           videoRef.current.srcObject = stream;
+          setCameraReady(true);
         }
       } catch (err) {
-        console.error("Error accessing camera:", err);
+        try {
+          stream = await navigator.mediaDevices.getUserMedia({
+            video: true,
+            audio: false,
+          });
+          if (videoRef.current) {
+            videoRef.current.srcObject = stream;
+            setCameraReady(true);
+          }
+        } catch (err2) {
+          const msg = err instanceof Error ? err.message : String(err);
+          setCameraError(
+            msg.includes('Permission') || msg.includes('NotAllowed')
+              ? 'Camera permission denied. Use "Upload photo" below.'
+              : 'Camera not available. Use "Upload photo" to analyze a picture.'
+          );
+          setCameraReady(false);
+        }
       }
     }
-    setupCamera();
-
+    if (!navigator.mediaDevices?.getUserMedia) {
+      setCameraError('Camera not supported in this browser. Use "Upload photo" instead.');
+    } else {
+      setupCamera();
+    }
     return () => {
-      if (videoRef.current && videoRef.current.srcObject) {
-        const stream = videoRef.current.srcObject as MediaStream;
-        stream.getTracks().forEach(track => track.stop());
-      }
+      if (stream) stream.getTracks().forEach((t) => t.stop());
     };
   }, []);
 
@@ -56,39 +92,52 @@ export default function CameraPage() {
       const context = canvas.getContext('2d');
       if (context) {
         context.drawImage(video, 0, 0, canvas.width, canvas.height);
-        setPhotoData(canvas.toDataURL('image/png'));
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.9);
+        setPhotoData(dataUrl);
         setHasPhoto(true);
         setPrediction(null);
+        void runAnalysis(dataUrl);
       }
     }
   };
 
-  const analyzeFood = async () => {
-    if (!photoData) return;
-    
+  const runAnalysis = async (dataUrl: string) => {
     setAnalyzing(true);
-    
+    setAnalysisError(null);
     try {
-      const response = await fetch("/api/predict", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ image: photoData }),
+      const blob = await (await fetch(dataUrl)).blob();
+      const form = new FormData();
+      form.append('file', blob, 'food.jpg');
+      const response = await fetch(`${API_BASE}/analyze-meal`, {
+        method: 'POST',
+        body: form,
       });
-      
-      if (!response.ok) throw new Error("Prediction failed");
-      
-      const result = await response.json();
-      setPrediction(result);
-    } catch (error) {
-      console.error("Error analyzing food:", error);
-      // Fallback to mock data if API fails
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        const detail = (data && typeof data.detail === 'string') ? data.detail : data.detail?.join?.(' ') || `Server error ${response.status}`;
+        throw new Error(detail);
+      }
+      const first = (data as MealAnalysisResponse).foods?.[0];
       setPrediction({
-        food_name: "Food Item",
-        calories: 300,
-        protein: 20,
-        carbs: 30,
-        fats: 15,
-        confidence: 75,
+        food_name: (data as MealAnalysisResponse).foods?.length > 1 ? 'Meal' : (first?.name ?? 'Food'),
+        calories: (data as MealAnalysisResponse).total_calories,
+        protein: Math.round((data as MealAnalysisResponse).total_protein * 10) / 10,
+        carbs: Math.round((data as MealAnalysisResponse).total_carbs * 10) / 10,
+        fats: Math.round((data as MealAnalysisResponse).total_fats * 10) / 10,
+        confidence: first ? Math.round(first.confidence * 100) : 0,
+        foods: (data as MealAnalysisResponse).foods,
+      });
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      console.error('Analysis error:', err);
+      setAnalysisError(message);
+      setPrediction({
+        food_name: 'Could not analyze',
+        calories: 0,
+        protein: 0,
+        carbs: 0,
+        fats: 0,
+        confidence: 0,
       });
     } finally {
       setAnalyzing(false);
@@ -124,6 +173,22 @@ export default function CameraPage() {
     setHasPhoto(false);
     setPhotoData(null);
     setPrediction(null);
+    setAnalysisError(null);
+  };
+
+  const handleFilePick = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !file.type.startsWith('image/')) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      const dataUrl = reader.result as string;
+      setPhotoData(dataUrl);
+      setHasPhoto(true);
+      setPrediction(null);
+      void runAnalysis(dataUrl);
+    };
+    reader.readAsDataURL(file);
+    e.target.value = '';
   };
 
   return (
@@ -137,9 +202,47 @@ export default function CameraPage() {
           {hasPhoto ? (
             <img src={photoData!} className="w-full h-full object-cover" alt="Captured" />
           ) : (
-            <video ref={videoRef} autoPlay playsInline className="w-full h-full object-cover" />
+            <>
+              <video ref={videoRef} autoPlay playsInline muted className="w-full h-full object-cover" />
+              {cameraError && (
+                <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/70 p-6 text-center z-10">
+                  <Camera className="w-12 h-12 text-amber-400 mb-3 opacity-80" />
+                  <p className="text-white font-medium mb-1">Camera unavailable</p>
+                  <p className="text-white/80 text-sm mb-6 max-w-xs">{cameraError}</p>
+                  <p className="text-white/60 text-xs mb-4">Upload a food photo to analyze it:</p>
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="flex items-center gap-2 px-6 py-3 bg-orange-500 text-white font-bold rounded-full shadow-lg"
+                  >
+                    <Upload size={20} />
+                    Upload photo
+                  </button>
+                </div>
+              )}
+            </>
           )}
         </div>
+
+        {/* Analyzing overlay */}
+        {analyzing && (
+          <div className="absolute inset-0 z-20 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+            <div className="bg-white/95 rounded-2xl px-8 py-6 flex flex-col items-center gap-3 shadow-xl">
+              <Loader2 className="w-10 h-10 text-orange-500 animate-spin" />
+              <p className="font-bold text-gray-800">Neil is analyzing...</p>
+              <p className="text-sm text-gray-500">Calories & macros in a sec</p>
+            </div>
+          </div>
+        )}
+
+        {/* Error from backend */}
+        {analysisError && (
+          <div className="absolute top-24 left-4 right-4 z-30 bg-red-500/95 text-white rounded-2xl p-4 shadow-xl">
+            <p className="font-bold mb-1">Analysis failed</p>
+            <p className="text-sm opacity-95">{analysisError}</p>
+            <p className="text-xs mt-2 opacity-80">Check backend .env (e.g. GROQ_API_KEY) and try again.</p>
+          </div>
+        )}
 
         {/* Prediction Result Overlay */}
         {prediction && (
@@ -186,13 +289,25 @@ export default function CameraPage() {
 
         <div className="absolute bottom-32 left-0 right-0 flex justify-center items-center gap-8 z-30">
           {!hasPhoto ? (
-            <button 
-              onClick={takePicture} 
-              data-testid="button-capture"
-              className="w-20 h-20 rounded-full border-[6px] border-orange-400 flex items-center justify-center p-1 bg-white shadow-lg active:scale-95 transition-transform"
-            >
-              <div className="w-full h-full rounded-full border-[3px] border-orange-400 bg-transparent" />
-            </button>
+            <div className="flex flex-col items-center gap-4">
+              {cameraReady && (
+                <button 
+                  onClick={takePicture} 
+                  data-testid="button-capture"
+                  className="w-20 h-20 rounded-full border-[6px] border-orange-400 flex items-center justify-center p-1 bg-white shadow-lg active:scale-95 transition-transform"
+                >
+                  <div className="w-full h-full rounded-full border-[3px] border-orange-400 bg-transparent" />
+                </button>
+              )}
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                className="flex items-center gap-2 px-5 py-2.5 bg-white/90 text-gray-800 font-semibold rounded-full shadow-lg text-sm"
+              >
+                <Upload size={18} />
+                Upload photo
+              </button>
+            </div>
           ) : (
             <div className="flex gap-6 items-center">
               <button 
@@ -205,7 +320,7 @@ export default function CameraPage() {
               
               {!prediction ? (
                 <button 
-                  onClick={analyzeFood} 
+                  onClick={() => photoData && runAnalysis(photoData)} 
                   disabled={analyzing}
                   data-testid="button-analyze"
                   className="px-8 py-3 bg-blue-500 text-white font-bold rounded-full shadow-lg uppercase tracking-widest text-sm disabled:opacity-50 flex items-center gap-2"
@@ -216,7 +331,7 @@ export default function CameraPage() {
                       Analyzing...
                     </>
                   ) : (
-                    "Analyze Food"
+                    "Analyze again"
                   )}
                 </button>
               ) : (
@@ -242,6 +357,14 @@ export default function CameraPage() {
           )}
         </div>
         <canvas ref={canvasRef} className="hidden" />
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*"
+          capture="environment"
+          className="hidden"
+          onChange={handleFilePick}
+        />
       </div>
     </Layout>
   );
