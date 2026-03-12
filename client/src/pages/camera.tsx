@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import Layout from "@/components/layout";
-import { X, Zap, Check, X as CloseIcon, Loader2, Camera, Upload } from "lucide-react";
+import { X, Zap, Check, X as CloseIcon, Loader2, Camera, Upload, Search } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useLocation } from "wouter";
 
@@ -32,7 +32,9 @@ export default function CameraPage() {
   const [flashActive, setFlashActive] = useState(false);
   const [analyzing, setAnalyzing] = useState(false);
   const [prediction, setPrediction] = useState<PredictionResult | null>(null);
-  const [analysisError, setAnalysisError] = useState<string | null>(null);
+  const [isManualEntry, setIsManualEntry] = useState(false);
+  const [manualName, setManualName] = useState("");
+  const [lookingUp, setLookingUp] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -96,6 +98,8 @@ export default function CameraPage() {
         setPhotoData(dataUrl);
         setHasPhoto(true);
         setPrediction(null);
+        setIsManualEntry(false);
+        setManualName('');
         void runAnalysis(dataUrl);
       }
     }
@@ -103,7 +107,8 @@ export default function CameraPage() {
 
   const runAnalysis = async (dataUrl: string) => {
     setAnalyzing(true);
-    setAnalysisError(null);
+    setIsManualEntry(false);
+    setManualName('');
     try {
       const blob = await (await fetch(dataUrl)).blob();
       const form = new FormData();
@@ -128,25 +133,67 @@ export default function CameraPage() {
         foods: (data as MealAnalysisResponse).foods,
       });
     } catch (err) {
-      const message = err instanceof Error ? err.message : String(err);
       console.error('Analysis error:', err);
-      setAnalysisError(message);
-      setPrediction({
-        food_name: 'Could not analyze',
-        calories: 0,
-        protein: 0,
-        carbs: 0,
-        fats: 0,
-        confidence: 0,
-      });
+      // Instead of showing an error card, switch to manual entry mode
+      setIsManualEntry(true);
+      setPrediction(null);
     } finally {
       setAnalyzing(false);
     }
   };
 
+  const lookupManualMeal = async () => {
+    if (!manualName.trim()) return;
+    setLookingUp(true);
+    try {
+      const resp = await fetch('/api/lookup-meal', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: manualName.trim() }),
+      });
+      const data = await resp.json();
+      if (resp.ok && data.calories > 0) {
+        setPrediction({
+          food_name: data.name ?? manualName,
+          calories: data.calories,
+          protein: Math.round(data.protein * 10) / 10,
+          carbs: Math.round(data.carbs * 10) / 10,
+          fats: Math.round(data.fats * 10) / 10,
+          confidence: data.confidence ?? 70,
+        });
+        setIsManualEntry(false);
+        setManualName('');
+      }
+    } catch (err) {
+      // Keep manual entry open on failure
+      console.error('Lookup error:', err);
+    } finally {
+      setLookingUp(false);
+    }
+  };
+
   const logMeal = () => {
     if (!prediction) return;
-    
+
+    // Build per-item foods array so the home screen can show/edit individual items
+    const foods = prediction.foods && prediction.foods.length > 0
+      ? prediction.foods.map(f => ({
+          name: f.name,
+          portion_grams: f.portion_grams || 100,
+          calories: f.calories,
+          protein: f.protein,
+          carbs: f.carbs,
+          fats: f.fats,
+        }))
+      : [{
+          name: prediction.food_name,
+          portion_grams: 100,
+          calories: prediction.calories,
+          protein: prediction.protein,
+          carbs: prediction.carbs,
+          fats: prediction.fats,
+        }];
+
     const newMeal = {
       id: Date.now(),
       image: photoData,
@@ -155,13 +202,14 @@ export default function CameraPage() {
       protein: prediction.protein,
       carbs: prediction.carbs,
       fats: prediction.fats,
+      foods,
       timestamp: new Date().toISOString()
     };
 
     const saved = localStorage.getItem('logged_meals');
     const meals = saved ? JSON.parse(saved) : [];
     localStorage.setItem('logged_meals', JSON.stringify([...meals, newMeal]));
-    
+
     setLocation("/");
   };
 
@@ -173,7 +221,8 @@ export default function CameraPage() {
     setHasPhoto(false);
     setPhotoData(null);
     setPrediction(null);
-    setAnalysisError(null);
+    setIsManualEntry(false);
+    setManualName('');
   };
 
   const handleFilePick = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -185,6 +234,8 @@ export default function CameraPage() {
       setPhotoData(dataUrl);
       setHasPhoto(true);
       setPrediction(null);
+      setIsManualEntry(false);
+      setManualName('');
       void runAnalysis(dataUrl);
     };
     reader.readAsDataURL(file);
@@ -235,44 +286,78 @@ export default function CameraPage() {
           </div>
         )}
 
-        {/* Error from backend */}
-        {analysisError && (
-          <div className="absolute top-24 left-4 right-4 z-30 bg-red-500/95 text-white rounded-2xl p-4 shadow-xl">
-            <p className="font-bold mb-1">Analysis failed</p>
-            <p className="text-sm opacity-95">{analysisError}</p>
-            <p className="text-xs mt-2 opacity-80">Check backend .env (e.g. GROQ_API_KEY) and try again.</p>
-          </div>
-        )}
-
-        {/* Prediction Result Overlay */}
-        {prediction && (
+        {/* Result overlay – either prediction card OR manual entry card, never both */}
+        {!analyzing && (
           <div className="absolute top-24 left-4 right-4 z-30">
-            <div className="bg-white/95 backdrop-blur rounded-3xl p-6 shadow-2xl">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-2xl font-bold font-display uppercase tracking-tight">{prediction.food_name}</h3>
-                <span className="text-sm font-bold text-green-600 bg-green-100 px-3 py-1 rounded-full">
-                  {prediction.confidence}% match
-                </span>
+            {isManualEntry ? (
+              /* ── Manual entry card (shown when AI couldn't recognize the food) ── */
+              <div className="bg-white/97 backdrop-blur rounded-3xl p-6 shadow-2xl">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center shrink-0">
+                    <span className="text-xl">🤔</span>
+                  </div>
+                  <div>
+                    <h3 className="text-base font-bold text-gray-900 leading-tight">Neil couldn't recognize this</h3>
+                    <p className="text-xs text-gray-500 mt-0.5">Enter the meal name to look up calories</p>
+                  </div>
+                </div>
+
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={manualName}
+                    onChange={(e) => setManualName(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && lookupManualMeal()}
+                    placeholder="e.g. Grilled Chicken, Pizza…"
+                    className="flex-1 border border-gray-200 rounded-xl px-4 py-3 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-orange-400 bg-gray-50"
+                    autoFocus
+                  />
+                  <button
+                    onClick={lookupManualMeal}
+                    disabled={lookingUp || !manualName.trim()}
+                    className="px-4 py-3 bg-orange-500 text-white font-bold rounded-xl disabled:opacity-40 flex items-center justify-center gap-1.5 shrink-0"
+                  >
+                    {lookingUp ? (
+                      <Loader2 size={18} className="animate-spin" />
+                    ) : (
+                      <Search size={18} />
+                    )}
+                  </button>
+                </div>
+
+                <p className="text-xs text-gray-400 mt-2 text-center">
+                  We'll estimate quantity &amp; match it to the menu for accurate calories
+                </p>
               </div>
-              <div className="grid grid-cols-4 gap-4 text-center">
-                <div>
-                  <p className="text-2xl font-bold text-orange-500">{prediction.calories}</p>
-                  <p className="text-xs font-bold text-gray-500 uppercase">Cals</p>
+            ) : prediction ? (
+              /* ── Normal prediction card ── */
+              <div className="bg-white/95 backdrop-blur rounded-3xl p-6 shadow-2xl">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-2xl font-bold font-display uppercase tracking-tight">{prediction.food_name}</h3>
+                  <span className="text-sm font-bold text-green-600 bg-green-100 px-3 py-1 rounded-full">
+                    {prediction.confidence}% match
+                  </span>
                 </div>
-                <div>
-                  <p className="text-2xl font-bold text-blue-500">{prediction.protein}g</p>
-                  <p className="text-xs font-bold text-gray-500 uppercase">Protein</p>
-                </div>
-                <div>
-                  <p className="text-2xl font-bold text-yellow-500">{prediction.carbs}g</p>
-                  <p className="text-xs font-bold text-gray-500 uppercase">Carbs</p>
-                </div>
-                <div>
-                  <p className="text-2xl font-bold text-red-500">{prediction.fats}g</p>
-                  <p className="text-xs font-bold text-gray-500 uppercase">Fats</p>
+                <div className="grid grid-cols-4 gap-4 text-center">
+                  <div>
+                    <p className="text-2xl font-bold text-orange-500">{prediction.calories}</p>
+                    <p className="text-xs font-bold text-gray-500 uppercase">Cals</p>
+                  </div>
+                  <div>
+                    <p className="text-2xl font-bold text-blue-500">{prediction.protein}g</p>
+                    <p className="text-xs font-bold text-gray-500 uppercase">Protein</p>
+                  </div>
+                  <div>
+                    <p className="text-2xl font-bold text-yellow-500">{prediction.carbs}g</p>
+                    <p className="text-xs font-bold text-gray-500 uppercase">Carbs</p>
+                  </div>
+                  <div>
+                    <p className="text-2xl font-bold text-red-500">{prediction.fats}g</p>
+                    <p className="text-xs font-bold text-gray-500 uppercase">Fats</p>
+                  </div>
                 </div>
               </div>
-            </div>
+            ) : null}
           </div>
         )}
 
@@ -291,36 +376,38 @@ export default function CameraPage() {
           {!hasPhoto ? (
             <div className="flex flex-col items-center gap-4">
               {cameraReady && (
-                <button 
-                  onClick={takePicture} 
+                <button
+                  onClick={takePicture}
                   data-testid="button-capture"
                   className="w-20 h-20 rounded-full border-[6px] border-orange-400 flex items-center justify-center p-1 bg-white shadow-lg active:scale-95 transition-transform"
                 >
                   <div className="w-full h-full rounded-full border-[3px] border-orange-400 bg-transparent" />
                 </button>
               )}
-              <button
-                type="button"
-                onClick={() => fileInputRef.current?.click()}
-                className="flex items-center gap-2 px-5 py-2.5 bg-white/90 text-gray-800 font-semibold rounded-full shadow-lg text-sm"
-              >
-                <Upload size={18} />
-                Upload photo
-              </button>
+              {!cameraError && (
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="flex items-center gap-2 px-5 py-2.5 bg-white/90 text-gray-800 font-semibold rounded-full shadow-lg text-sm"
+                >
+                  <Upload size={18} />
+                  Upload photo
+                </button>
+              )}
             </div>
           ) : (
             <div className="flex gap-6 items-center">
-              <button 
-                onClick={retake} 
+              <button
+                onClick={retake}
                 data-testid="button-retake"
                 className="w-16 h-16 rounded-full bg-red-500 flex items-center justify-center text-white shadow-lg active:scale-90 transition-transform"
               >
                 <CloseIcon size={32} strokeWidth={3} />
               </button>
-              
+
               {!prediction ? (
-                <button 
-                  onClick={() => photoData && runAnalysis(photoData)} 
+                <button
+                  onClick={() => photoData && runAnalysis(photoData)}
                   disabled={analyzing}
                   data-testid="button-analyze"
                   className="px-8 py-3 bg-blue-500 text-white font-bold rounded-full shadow-lg uppercase tracking-widest text-sm disabled:opacity-50 flex items-center gap-2"
@@ -335,8 +422,8 @@ export default function CameraPage() {
                   )}
                 </button>
               ) : (
-                <button 
-                  onClick={logMeal} 
+                <button
+                  onClick={logMeal}
                   data-testid="button-log"
                   className="px-8 py-3 bg-green-500 text-white font-bold rounded-full shadow-lg uppercase tracking-widest text-sm"
                 >
@@ -345,8 +432,8 @@ export default function CameraPage() {
               )}
 
               {prediction && (
-                <button 
-                  onClick={logMeal} 
+                <button
+                  onClick={logMeal}
                   data-testid="button-confirm"
                   className="w-16 h-16 rounded-full bg-green-500 flex items-center justify-center text-white shadow-lg active:scale-90 transition-transform"
                 >
